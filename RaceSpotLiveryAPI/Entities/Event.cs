@@ -18,6 +18,7 @@ namespace RaceSpotLiveryAPI.Entities
         public DateTime RaceTime { get; set; }
         public string BroadcastLink { get; set; }
         public EventState EventState { get; set; }
+        public int Order { get; set; }
     }
 
     public enum EventState

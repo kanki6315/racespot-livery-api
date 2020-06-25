@@ -21,6 +21,10 @@ namespace RaceSpotLiveryAPI.DTOs
             this.SeriesId = livery.SeriesId;
             this.LiveryType = livery.LiveryType;
             this.ITeamId = livery.ITeamId;
+            if(livery.Car != null)
+            {
+                CarName = livery.Car.Name;
+            }
         }
 
         public LiveryDTO(Livery livery, string PreviewUrl) : this(livery)
@@ -33,6 +37,8 @@ namespace RaceSpotLiveryAPI.DTOs
         public Guid SeriesId { get; set; }
         public string ITeamId { get; set; }
         public Guid Id { get; set; }
+
         public string PreviewUrl { get; set; }
+        public string CarName { get; set; }
     }
 }

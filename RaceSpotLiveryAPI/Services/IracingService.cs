@@ -1,11 +1,13 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json.Linq;
+using RaceSpotLiveryAPI.Entities;
 using RaceSpotLiveryAPI.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -13,6 +15,7 @@ namespace RaceSpotLiveryAPI.Services
 {
     public class IracingService : IIracingService
     {
+        private readonly IS3Service _s3Service;
         private readonly HttpClient _httpClient;
         private readonly string _iracingPassword;
         private readonly string _iracingUsername;
@@ -21,13 +24,16 @@ namespace RaceSpotLiveryAPI.Services
 
         private bool _isLoggedIn;
 
-        public IracingService(IConfiguration configuration)
+        private HttpClientHandler _handler;
+
+        public IracingService(IConfiguration configuration, IS3Service s3Service)
         {
-            var handler = new HttpClientHandler
+            this._s3Service = s3Service;
+            _handler = new HttpClientHandler
             {
                 CookieContainer = new CookieContainer()
             };
-            _httpClient = new HttpClient(handler);
+            _httpClient = new HttpClient(_handler);
 
             _iracingUsername = configuration["Iracing.Username"];
             _iracingPassword = configuration["Iracing.Password"];
@@ -35,15 +41,18 @@ namespace RaceSpotLiveryAPI.Services
             _isLoggedIn = false;
         }
 
-        public async Task<bool> SendPrivateMessage(string username, string message)
+        public async Task<bool> SendPrivateMessage(string userId, string message)
         {
-            try
+            if (!_isLoggedIn)
             {
-                await Login();
-            }
-            catch (Exception ex)
-            {
-                throw ex;
+                try
+                {
+                    await Login();
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
             }
 
             var formContent = new FormUrlEncodedContent(new[]
@@ -52,8 +61,8 @@ namespace RaceSpotLiveryAPI.Services
                 new KeyValuePair<string, string>("module", "pm"),
                 new KeyValuePair<string, string>("preview", "0"),
                 new KeyValuePair<string, string>("start", ""),
-                new KeyValuePair<string, string>("toUsername", username),
-                new KeyValuePair<string, string>("toUserId", ""),
+                new KeyValuePair<string, string>("toUsername", ""),
+                new KeyValuePair<string, string>("toUserId", userId),
                 new KeyValuePair<string, string>("disa1ble_html", "on"),
                 new KeyValuePair<string, string>("attach_sig", "on"),
                 new KeyValuePair<string, string>("addbbcode24", "pm"),
@@ -62,19 +71,22 @@ namespace RaceSpotLiveryAPI.Services
                 new KeyValuePair<string, string>("message", message)
             });
 
-            var response = await _httpClient.PostAsync(ConstructForumPost(), formContent);
+            var response = await _httpClient.PostAsync(ConstructRequestUrl("jforum/jforum.page"), formContent);
             return response.IsSuccessStatusCode;
         }
 
         public async Task<IracingDriverModel> LookupIracingDriverById(string id)
         {
-            try
+            if(!_isLoggedIn)
             {
-                await Login();
-            }
-            catch (Exception ex)
-            {
-                throw ex;
+                try
+                {
+                    await Login();
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
             }
 
             var getNameUrl = ConstructRequestUrl(
@@ -111,27 +123,135 @@ namespace RaceSpotLiveryAPI.Services
             };
         }
 
+        public async Task<IracingTeamModel> LookupIracingTeamById(string id, bool findDrivers)
+        {
+            if (!_isLoggedIn)
+            {
+                try
+                {
+                    await Login();
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }
+
+            var getTeamUrl = ConstructRequestUrl(
+                "membersite/member/GetTeamDirectory",
+                new Dictionary<string, string> { { "search", id } });
+            var teamResponse = await _httpClient.GetStringAsync(getTeamUrl);
+            var teamNfo = MapToNFOs(teamResponse).ToList();
+
+            var team = new IracingTeamModel
+            {
+                TeamName = teamNfo[0].GetValueOrDefault("teamname").Replace("+", " "),
+                TeamId = teamNfo[0].GetValueOrDefault("teamid").Replace("-", ""),
+                NumDrivers = teamNfo[0].GetValueOrDefault("rostercount"),
+                TeamOwner = teamNfo[0].GetValueOrDefault("displayname"),
+                TeamOwnerId = teamNfo[0].GetValueOrDefault("custid"),
+                Drivers = new List<IracingDriverModel>()
+            };
+
+            if (findDrivers)
+            {
+                var getDriversUrl = ConstructRequestUrl(
+                    "membersite/member/GetTeamMembers",
+                    new Dictionary<string, string> { { "teamid", $"-{team.TeamId}" } });
+                var driversResponse = await _httpClient.GetStringAsync(getDriversUrl);
+                var driversJson = JArray.Parse(driversResponse);
+                foreach (JObject driver in driversJson)
+                {
+                    try
+                    {
+                        IracingDriverModel driverModel = await LookupIracingDriverById(driver["custID"].ToString());
+                        team.Drivers.Add(driverModel);
+                    }
+                    catch (Exception)
+                    {
+                        team.NumDrivers = (Int32.Parse(team.NumDrivers) - 1).ToString();
+                    }
+                }
+            }
+
+            return team;
+        }
+
+
+
         private async Task Login()
         {
-            if (_isLoggedIn)
+            if (await CheckLoginStatus())
             {
+                _isLoggedIn = true;
                 return;
             }
 
+            var cookies = await _s3Service.GetIracingCredentialsFromS3Async();
+            Uri uri = new Uri("https://members.iracing.com");
+            foreach (var cookie in cookies)
+            {
+                _handler.CookieContainer.Add(uri, 
+                    new Cookie(cookie.Key, cookie.Value));
+            }
+
+            var cookiesAccepted = await CheckLoginStatus();
+            if(cookiesAccepted)
+            {
+                _isLoggedIn = true;
+                return;
+            }
+
+            await SubmitLoginAsync();
+        }
+
+        private async Task SubmitLoginAsync()
+        {
+            var formContent = new FormUrlEncodedContent(new[]
+            {
+                new KeyValuePair<string, string>("username", _iracingUsername),
+                new KeyValuePair<string, string>("password", _iracingPassword),
+                new KeyValuePair<string, string>("utcoffset", "420"),
+                new KeyValuePair<string, string>("todaysdate", "")
+            });
             var url = ConstructRequestUrl(
-                "download/Login",
-                new Dictionary<string, string>
-                {
-                    {"username", _iracingUsername},
-                    {"password", _iracingPassword}
-                });
+                "download/Login");
 
-            var response = await _httpClient.PostAsync(url, null);
+            var response = await _httpClient.PostAsync(url, formContent);
 
-            _isLoggedIn = response.StatusCode == HttpStatusCode.Found;
+            _isLoggedIn = await CheckLoginStatus();
             if (!_isLoggedIn)
             {
-                throw new Exception("Unable to login");
+                throw new Exception("Unable to connect to iRacing service at this time. Please try again later.");
+            }
+
+            var newCookies = new Dictionary<string, string>();
+            foreach (var cookie in _handler.CookieContainer.GetCookies(new Uri("https://members.iracing.com")))
+            {
+                string[] cookieSplit = cookie.ToString().Split("=");
+                newCookies.Add(cookieSplit[0], cookieSplit[1]);
+            }
+            await _s3Service.PutIracingCredentialsFromS3Async(newCookies);
+        }
+
+        private async Task<bool> CheckLoginStatus()
+        {
+            var url = ConstructRequestUrl(
+                "membersite/member/GetDriverCounts",
+                new Dictionary<string, string>
+                {
+                    {"invokedby", "racepanel"}
+                });
+
+            try
+            {
+                var response = await _httpClient.GetStringAsync(url);
+                var json = JObject.Parse(response);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
             }
         }
 
@@ -163,9 +283,9 @@ namespace RaceSpotLiveryAPI.Services
             return builder.ToString();
         }
 
-        private static string ConstructForumPost()
+        private static string ConstructRequestUrl(string path)
         {
-            var builder = new UriBuilder("https", IracingBaseUrl) { Path = "jforum/jforum.page" };
+            var builder = new UriBuilder("https", IracingBaseUrl) { Path = path };
             return builder.ToString();
         }
     }

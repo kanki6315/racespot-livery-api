@@ -9,7 +9,10 @@ namespace RaceSpotLiveryAPI.Services
 {
     public interface IS3Service
     {
-        Task UploadLivery(Guid seriesId, string iTeamId, LiveryType type, Stream tga, Stream thumbnail);
-        string GetPreview(Guid seriesId, string iTeamId, LiveryType type);
+        Task UploadLivery(Livery livery, Stream tga, Stream thumbnail);
+        string GetPreview(Livery livery);
+
+        Task PutIracingCredentialsFromS3Async(Dictionary<string, string> cookies);
+        Task<Dictionary<string, string>> GetIracingCredentialsFromS3Async();
     }
 }

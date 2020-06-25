@@ -1,0 +1,707 @@
+{
+	"info": {
+		"_postman_id": "8d66b00e-7aa9-4b72-83fe-86307537f766",
+		"name": "Livery API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Series",
+			"item": [
+				{
+					"name": "GET ALL Series",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Host}}://{{BaseUrl}}/api/series/",
+							"protocol": "{{Host}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"api",
+								"series",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Series By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Host}}://{{BaseUrl}}/api/series/18d266b6-86e6-49d9-888f-7086a946a9f6",
+							"protocol": "{{Host}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"api",
+								"series",
+								"18d266b6-86e6-49d9-888f-7086a946a9f6"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Series",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{BearerToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Ferrari Vs Ford\",\r\n    \"isTeam\": false,\r\n    \"isArchived\": false,\r\n    \"carIds\": [\"b2c5871b-f46c-4199-ad61-3179704422ec\", \"8bdf85ae-0114-40fd-93ae-e8681a28670c\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Host}}://{{BaseUrl}}/api/series/",
+							"protocol": "{{Host}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"api",
+								"series",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Series",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{BearerToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"07ad6841-4d25-4f54-8a43-c02994f542e5\",\r\n    \"name\": \"Ferrari Vs Ford\",\r\n    \"isTeam\": false,\r\n    \"isArchived\": false\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Host}}://{{BaseUrl}}/api/series/07ad6841-4d25-4f54-8a43-c02994f542e5/",
+							"protocol": "{{Host}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"api",
+								"series",
+								"07ad6841-4d25-4f54-8a43-c02994f542e5",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Cars",
+			"item": [
+				{
+					"name": "GET ALL Cars",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{BearerToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{Host}}://{{BaseUrl}}/api/cars/",
+							"protocol": "{{Host}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"api",
+								"cars",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Car By ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{BearerToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{Host}}://{{BaseUrl}}/api/cars/8bdf85ae-0114-40fd-93ae-e8681a28670c",
+							"protocol": "{{Host}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"api",
+								"cars",
+								"8bdf85ae-0114-40fd-93ae-e8681a28670c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Cars",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{BearerToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"name\": \"Ford GT 2017\",\r\n        \"path\": \"fordgt2017\",\r\n        \"logoImgUrl\": \"\"\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Host}}://{{BaseUrl}}/api/cars/",
+							"protocol": "{{Host}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"api",
+								"cars",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Cars",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{BearerToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"8bdf85ae-0114-40fd-93ae-e8681a28670c\",\r\n    \"name\": \"Ford GT 2017\",\r\n    \"path\": \"fordgt2017\",\r\n    \"logoImgUrl\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Host}}://{{BaseUrl}}/api/cars/8bdf85ae-0114-40fd-93ae-e8681a28670c",
+							"protocol": "{{Host}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"api",
+								"cars",
+								"8bdf85ae-0114-40fd-93ae-e8681a28670c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Series Cars",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{BearerToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\"d09df87c-3b47-45e9-b875-4fb5656f440f\"]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Host}}://{{BaseUrl}}/api/series/18d266b6-86e6-49d9-888f-7086a946a9f6/cars",
+							"protocol": "{{Host}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"api",
+								"series",
+								"18d266b6-86e6-49d9-888f-7086a946a9f6",
+								"cars"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Accounts",
+			"item": [
+				{
+					"name": "Send Iracing Verification",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{BearerToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"iracingId\":\"139694\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Host}}://{{BaseUrl}}/api/accounts/send-iracing-verification",
+							"protocol": "{{Host}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"api",
+								"accounts",
+								"send-iracing-verification"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Complete Iracing Verification",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{BearerToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"key\":\"60a5f318-f157-49d1-95dc-2119b3ada0d2\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Host}}://{{BaseUrl}}/api/accounts/iracing-verification",
+							"protocol": "{{Host}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"api",
+								"accounts",
+								"iracing-verification"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Iracing",
+			"item": [
+				{
+					"name": "Send PM",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{BearerToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"userId\":\"139694\", \"message\": \"A test message\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Host}}://{{BaseUrl}}/api/accounts/iracing/pm",
+							"protocol": "{{Host}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"api",
+								"accounts",
+								"iracing",
+								"pm"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Iracing Driver Details By ID",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{BearerToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"userId\":\"139694\", \"message\": \"A test message\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Host}}://{{BaseUrl}}/api/iracing/driver?iracingId=139694",
+							"protocol": "{{Host}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"api",
+								"iracing",
+								"driver"
+							],
+							"query": [
+								{
+									"key": "iracingId",
+									"value": "139694"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Events",
+			"item": [
+				{
+					"name": "GET ALL Events",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Host}}://{{BaseUrl}}/api/events/",
+							"protocol": "{{Host}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"api",
+								"events",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Events by Series ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{Host}}://{{BaseUrl}}/api/series/18d266b6-86e6-49d9-888f-7086a946a9f6/events",
+							"protocol": "{{Host}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"api",
+								"series",
+								"18d266b6-86e6-49d9-888f-7086a946a9f6",
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Event",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{BearerToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"seriesId\": \"18d266b6-86e6-49d9-888f-7086a946a9f6\",\r\n    \"raceTime\": \"2020-06-25T05:01:40Z\",\r\n    \"broadcastLink\": false,\r\n    \"eventState\": \"UPCOMING\",\r\n    \"order\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Host}}://{{BaseUrl}}/api/series/18d266b6-86e6-49d9-888f-7086a946a9f6/events",
+							"protocol": "{{Host}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"api",
+								"series",
+								"18d266b6-86e6-49d9-888f-7086a946a9f6",
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT Event",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{BearerToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"6687c50c-0efc-42c2-a846-8080926f3ad5\",\r\n    \"seriesId\": \"18d266b6-86e6-49d9-888f-7086a946a9f6\",\r\n    \"raceTime\": \"2020-06-27T05:01:40Z\",\r\n    \"broadcastLink\": \"\",\r\n    \"eventState\": \"UPCOMING\",\r\n    \"order\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{Host}}://{{BaseUrl}}/api/events/6687c50c-0efc-42c2-a846-8080926f3ad5",
+							"protocol": "{{Host}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"api",
+								"events",
+								"6687c50c-0efc-42c2-a846-8080926f3ad5"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Livery",
+			"item": [
+				{
+					"name": "GET ALL Liveries",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{BearerToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{Host}}://{{BaseUrl}}/api/liveries/",
+							"protocol": "{{Host}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"api",
+								"liveries",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Liveries By Series ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{BearerToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{Host}}://{{BaseUrl}}/api/series/18d266b6-86e6-49d9-888f-7086a946a9f6/liveries/",
+							"protocol": "{{Host}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"api",
+								"series",
+								"18d266b6-86e6-49d9-888f-7086a946a9f6",
+								"liveries",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Livery By ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{BearerToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{Host}}://{{BaseUrl}}/api/liveries/a372564b-1d27-4a64-9cce-c95b3f91ea3e",
+							"protocol": "{{Host}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"api",
+								"liveries",
+								"a372564b-1d27-4a64-9cce-c95b3f91ea3e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upload Livery",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{BearerToken}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "type",
+									"value": "Car",
+									"type": "text"
+								},
+								{
+									"key": "iTeamId",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/kanki/Google Drive/Artifact Racing/Designs/Powerslide/car_#artifactINDYV2.tga"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{Host}}://{{BaseUrl}}/api/series/18d266b6-86e6-49d9-888f-7086a946a9f6/cars/d09df87c-3b47-45e9-b875-4fb5656f440f/liveries/",
+							"protocol": "{{Host}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"api",
+								"series",
+								"18d266b6-86e6-49d9-888f-7086a946a9f6",
+								"cars",
+								"d09df87c-3b47-45e9-b875-4fb5656f440f",
+								"liveries",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

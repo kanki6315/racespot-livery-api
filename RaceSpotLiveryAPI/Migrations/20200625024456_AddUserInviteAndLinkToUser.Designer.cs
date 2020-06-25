@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RaceSpotLiveryAPI.Contexts;
@@ -9,9 +10,10 @@ using RaceSpotLiveryAPI.Contexts;
 namespace RaceSpotLiveryAPI.Migrations
 {
     [DbContext(typeof(RaceSpotDBContext))]
-    partial class RaceSpotDBContextModelSnapshot : ModelSnapshot
+    [Migration("20200625024456_AddUserInviteAndLinkToUser")]
+    partial class AddUserInviteAndLinkToUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

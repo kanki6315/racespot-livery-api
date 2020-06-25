@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RaceSpotLiveryAPI.Contexts;
 using RaceSpotLiveryAPI.DTOs;
 using RaceSpotLiveryAPI.Entities;
@@ -11,6 +12,7 @@ namespace RaceSpotLiveryAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class CarsController : ControllerBase
     {
         private readonly RaceSpotDBContext _context;
@@ -28,6 +30,7 @@ namespace RaceSpotLiveryAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "GlobalAdmin")]
         public IActionResult Post([FromBody] CarDTO dto)
         {
             Car car = new Car()
@@ -43,7 +46,8 @@ namespace RaceSpotLiveryAPI.Controllers
 
         [HttpPut]
         [Route("{id}")]
-        public IActionResult Put([FromBody] CarDTO dto, [FromQuery] Guid id)
+        [Authorize(Policy = "GlobalAdmin")]
+        public IActionResult Put([FromBody] CarDTO dto, [FromRoute] Guid id)
         {
             var existing = _context.Cars.FirstOrDefault(s => s.Id == id);
             if (existing == null)
@@ -55,6 +59,19 @@ namespace RaceSpotLiveryAPI.Controllers
             existing.LogoImgUrl = dto.LogoImgUrl;
             _context.SaveChanges();
             return Ok(existing);
+        }
+
+        [HttpGet]
+        [Route("{id}")]
+        public IActionResult GetById([FromRoute] Guid id)
+        {
+            var existing = _context.Cars
+                .FirstOrDefault(s => s.Id == id);
+            if (existing == null)
+            {
+                return NotFound($"Car with id {id} was not found");
+            }
+            return Ok(new CarDTO(existing));
         }
     }
 }

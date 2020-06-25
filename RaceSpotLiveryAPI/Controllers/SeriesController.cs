@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RaceSpotLiveryAPI.Contexts;
 using RaceSpotLiveryAPI.DTOs;
@@ -23,14 +24,15 @@ namespace RaceSpotLiveryAPI.Controllers
 
 
         [HttpGet]
-        public IActionResult GetAll()
+        public IActionResult GetAllActiveSeries()
         {
-            var series = _context.Series.Include(s => s.SeriesCars).ThenInclude(s => s.Car)
+            var series = _context.Series.Where(s => !s.IsArchived)
                     .ToList().Select(s => new SeriesDTO(s)).ToList();
             return Ok(series);
         }
 
         [HttpPost]
+        [Authorize(Policy = "GlobalAdmin")]
         public IActionResult Post([FromBody] SeriesDTO dto)
         {
             var cars = dto.CarIds.Count == 0 ? new List<Car>() :_context.Cars.Where(c => dto.CarIds.Contains(c.Id)).ToList();
@@ -73,6 +75,7 @@ namespace RaceSpotLiveryAPI.Controllers
 
         [HttpPut]
         [Route("{id}")]
+        [Authorize(Policy = "GlobalAdmin")]
         public IActionResult Put([FromBody] SeriesDTO dto, [FromRoute] Guid id)
         {
             var existing = _context.Series
@@ -90,6 +93,7 @@ namespace RaceSpotLiveryAPI.Controllers
 
         [HttpPut]
         [Route("{id}/cars")]
+        [Authorize(Policy = "GlobalAdmin")]
         public IActionResult PutCars([FromRoute] Guid id, [FromBody] List<Guid> carIds)
         {
             var existing = _context.Series.FirstOrDefault(s => s.Id == id);
@@ -134,12 +138,13 @@ namespace RaceSpotLiveryAPI.Controllers
         [Route("{id}")]
         public IActionResult GetById([FromRoute] Guid id)
         {
-            var existing = _context.Series.FirstOrDefault(s => s.Id == id);
+            var existing = _context.Series
+                .Include(s => s.SeriesCars).ThenInclude(s => s.Car).FirstOrDefault(s => s.Id == id);
             if (existing == null)
             {
                 return NotFound($"Series with id {id} was not found");
             }
-            return Ok(existing);
+            return Ok(new SeriesDTO(existing));
         }
     }
 }

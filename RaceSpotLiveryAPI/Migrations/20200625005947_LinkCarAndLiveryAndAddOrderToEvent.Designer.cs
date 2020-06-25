@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RaceSpotLiveryAPI.Contexts;
@@ -9,9 +10,10 @@ using RaceSpotLiveryAPI.Contexts;
 namespace RaceSpotLiveryAPI.Migrations
 {
     [DbContext(typeof(RaceSpotDBContext))]
-    partial class RaceSpotDBContextModelSnapshot : ModelSnapshot
+    [Migration("20200625005947_LinkCarAndLiveryAndAddOrderToEvent")]
+    partial class LinkCarAndLiveryAndAddOrderToEvent
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -346,32 +348,6 @@ namespace RaceSpotLiveryAPI.Migrations
                     b.ToTable("SeriesCars");
                 });
 
-            modelBuilder.Entity("RaceSpotLiveryAPI.Entities.UserInvite", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("IracingId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("LastUpdated")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("UserInvites");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -466,13 +442,6 @@ namespace RaceSpotLiveryAPI.Migrations
                         .HasForeignKey("SeriesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("RaceSpotLiveryAPI.Entities.UserInvite", b =>
-                {
-                    b.HasOne("RaceSpotLiveryAPI.Entities.ApplicationUser", "User")
-                        .WithOne("Invite")
-                        .HasForeignKey("RaceSpotLiveryAPI.Entities.UserInvite", "UserId");
                 });
 #pragma warning restore 612, 618
         }

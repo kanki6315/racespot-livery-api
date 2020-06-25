@@ -16,6 +16,7 @@ namespace RaceSpotLiveryAPI.EntityConfiguration
             builder.Property(p => p.RaceTime).IsRequired().ValueGeneratedNever();
             builder.Property(p => p.BroadcastLink).IsRequired(false).ValueGeneratedNever();
             builder.Property(p => p.EventState).IsRequired().ValueGeneratedNever();
+            builder.Property(p => p.Order).IsRequired().ValueGeneratedNever();
 
             builder.HasKey(p => p.Id);
         }

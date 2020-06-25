@@ -18,5 +18,6 @@ namespace RaceSpotLiveryAPI.Entities
         public string LogoImgUrl { get; set; }
 
         public ICollection<SeriesCar> SeriesCars { get; set; }
+        public ICollection<Livery> Liveries { get; set; }
     }
 }

@@ -17,6 +17,10 @@ namespace RaceSpotLiveryAPI.EntityConfiguration
             builder.Property(p => p.Path).IsRequired().ValueGeneratedNever();
             builder.Property(p => p.LogoImgUrl).IsRequired(false).ValueGeneratedNever();
 
+            builder.HasMany(p => p.Liveries)
+                .WithOne(l => l.Car)
+                .IsRequired();
+
             builder.HasKey(p => p.Id);
         }
     }
