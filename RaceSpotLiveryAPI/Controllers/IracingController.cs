@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RaceSpotLiveryAPI.Models;
@@ -13,6 +14,7 @@ namespace RaceSpotLiveryAPI.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
+    [EnableCors("LocalDev")]
     public class IracingController : ControllerBase
     {
         private readonly IIracingService _iracingService;

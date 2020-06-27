@@ -19,10 +19,16 @@ namespace RaceSpotLiveryAPI.DTOs
             this.IsTeam = series.IsTeam;
             this.IsArchived = series.IsArchived;
             this.LastUpdated = series.LastUpdated;
-            
+            this.LogoImgUrl = series.LogoImgUrl;
+            this.Description = series.Description;
+
             if(series.SeriesCars != null)
             {
                 Cars = series.SeriesCars.Select(s => new CarDTO(s.Car)).ToList();
+            }
+            if(series.Events != null)
+            {
+                Events = series.Events.Select(e => new EventDTO(e)).ToList();
             }
         }
 
@@ -31,8 +37,12 @@ namespace RaceSpotLiveryAPI.DTOs
         public bool IsTeam { get; set; }
         public bool IsArchived { get; set; }
         public DateTime LastUpdated { get; set; }
+        public string LogoImgUrl { get; set; }
+        public string Description { get; set; }
 
         public List<Guid> CarIds { get; set; }
         public List<CarDTO> Cars { get; set; }
+
+        public List<EventDTO> Events { get; set; }
     }
 }

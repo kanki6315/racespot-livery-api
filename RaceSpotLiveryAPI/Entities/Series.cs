@@ -17,6 +17,9 @@ namespace RaceSpotLiveryAPI.Entities
         public bool IsTeam { get; set; }
         public bool IsArchived { get; set; }
         public DateTime LastUpdated { get; set; }
+        public string LogoImgUrl { get; set; }
+        public string Description { get; set; }
+
 
         public ICollection<Event> Events { get; set; }
         public ICollection<Livery> Liveries { get; set; }

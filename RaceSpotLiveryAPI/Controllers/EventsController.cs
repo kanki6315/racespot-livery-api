@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RaceSpotLiveryAPI.Contexts;
@@ -13,6 +14,7 @@ namespace RaceSpotLiveryAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [EnableCors("LocalDev")]
     public class EventsController : ControllerBase
     {
         private readonly RaceSpotDBContext _context;

@@ -177,16 +177,8 @@ namespace RaceSpotLiveryAPI.Services
             return team;
         }
 
-
-
         private async Task Login()
         {
-            if (await CheckLoginStatus())
-            {
-                _isLoggedIn = true;
-                return;
-            }
-
             var cookies = await _s3Service.GetIracingCredentialsFromS3Async();
             Uri uri = new Uri("https://members.iracing.com");
             foreach (var cookie in cookies)

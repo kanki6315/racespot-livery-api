@@ -1,9 +1,11 @@
 ﻿using Amazon.Runtime.Internal.Util;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using RaceSpotLiveryAPI.Contexts;
 using RaceSpotLiveryAPI.Entities;
@@ -22,6 +24,7 @@ namespace RaceSpotLiveryAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [EnableCors("LocalDev")]
     public class AccountsController : ControllerBase
     {
         private SymmetricSecurityKey _secretKey;
@@ -33,18 +36,23 @@ namespace RaceSpotLiveryAPI.Controllers
 
         private readonly RaceSpotDBContext _context;
 
+        private ILogger<AccountsController> _logger;
+
+
         public AccountsController(
             IConfiguration configuration,
             RaceSpotDBContext context,
             SignInManager<ApplicationUser> signInManager, 
             UserManager<ApplicationUser> userManager,
-            IIracingService iracingService)
+            IIracingService iracingService,
+            ILogger<AccountsController> logger)
         {
             _context = context;
             _signInManager = signInManager;
             _userManager = userManager;
             _secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Authentication.SigningKey"]));
             _iracingService = iracingService;
+            _logger = logger;
         }
 
         [Route("facebook")]
@@ -63,9 +71,11 @@ namespace RaceSpotLiveryAPI.Controllers
 
         public async Task<IActionResult> HandleExternalLogin()
         {
+            _logger.LogDebug("Starting external Login");
             var info = await _signInManager.GetExternalLoginInfoAsync();
-
+            _logger.LogDebug("got external Login info");
             var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false);
+            _logger.LogDebug("attempted to signin to signin manager");
 
             if (!result.Succeeded) //user does not exist yet
             {
@@ -96,14 +106,16 @@ namespace RaceSpotLiveryAPI.Controllers
                     await _userManager.AddLoginAsync(user, info);
                 }
                 String jwtToken = getTokenFromEmail(email);
-                return Redirect($"/#{jwtToken}");
+                return Redirect($"https://racespotliveries.tv/#{jwtToken}");
             }
             else
             {
                 var email = info.Principal.FindFirstValue(ClaimTypes.Email);
                 ApplicationUser user = await _userManager.FindByEmailAsync(email);
                 String jwtToken = getTokenFromEmail(email);
-                return Redirect($"/#{jwtToken}");
+                _logger.LogDebug("Redirecting");
+                Console.WriteLine("Redirecting");
+                return Redirect($"https://racespotliveries.tv/#{jwtToken}");
             }
         }
         [HttpPost]

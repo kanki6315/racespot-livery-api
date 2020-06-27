@@ -37,6 +37,14 @@ namespace RaceSpotLiveryAPI
         // This method gets called by the runtime. Use this method to add services to the container
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("LocalDev",
+                    builder => builder.WithOrigins("http://localhost:4200")
+                .AllowAnyHeader()
+                .AllowAnyMethod());
+            });
+
             services.AddSingleton<IS3Service, S3Service>();
             services.AddSingleton<IIracingService, IracingService>();
             services.AddControllers().AddNewtonsoftJson();
@@ -98,6 +106,8 @@ namespace RaceSpotLiveryAPI
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors("LocalDev");
 
             app.UseAuthentication();
             app.UseAuthorization();

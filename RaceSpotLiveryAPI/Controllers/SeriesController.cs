@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RaceSpotLiveryAPI.Contexts;
@@ -13,6 +14,7 @@ namespace RaceSpotLiveryAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [EnableCors("LocalDev")]
     public class SeriesController : ControllerBase
     {
         private readonly RaceSpotDBContext _context;
@@ -45,7 +47,9 @@ namespace RaceSpotLiveryAPI.Controllers
                 Name = dto.Name,
                 IsTeam = dto.IsTeam,
                 IsArchived = dto.IsArchived,
-                LastUpdated = DateTime.UtcNow
+                LastUpdated = DateTime.UtcNow,
+                LogoImgUrl = dto.LogoImgUrl,
+                Description = dto.Description
             };
             
             _context.Series.Add(series);
@@ -87,6 +91,8 @@ namespace RaceSpotLiveryAPI.Controllers
             existing.Name = dto.Name;
             existing.IsArchived = dto.IsArchived;
             existing.LastUpdated = DateTime.UtcNow;
+            existing.LogoImgUrl = dto.LogoImgUrl;
+            existing.Description = dto.Description;
             _context.SaveChanges();
             return Ok(new SeriesDTO(existing));
         }
@@ -139,7 +145,10 @@ namespace RaceSpotLiveryAPI.Controllers
         public IActionResult GetById([FromRoute] Guid id)
         {
             var existing = _context.Series
-                .Include(s => s.SeriesCars).ThenInclude(s => s.Car).FirstOrDefault(s => s.Id == id);
+                .Include(s => s.SeriesCars)
+                .ThenInclude(s => s.Car)
+                .Include(s => s.Events)
+                .FirstOrDefault(s => s.Id == id);
             if (existing == null)
             {
                 return NotFound($"Series with id {id} was not found");

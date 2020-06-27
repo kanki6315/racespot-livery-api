@@ -17,6 +17,8 @@ namespace RaceSpotLiveryAPI.EntityConfiguration
             builder.Property(p => p.IsTeam).IsRequired().ValueGeneratedNever();
             builder.Property(p => p.IsArchived).IsRequired().ValueGeneratedNever();
             builder.Property(p => p.LastUpdated).IsRequired().ValueGeneratedNever();
+            builder.Property(p => p.LogoImgUrl).IsRequired().ValueGeneratedNever();
+            builder.Property(p => p.Description).IsRequired(false).ValueGeneratedNever();
 
             builder.HasMany(p => p.Events)
                 .WithOne(e => e.Series)

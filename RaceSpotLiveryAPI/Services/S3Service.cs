@@ -36,21 +36,34 @@ namespace RaceSpotLiveryAPI.Services
             _logger = logger;
         }
 
-        public async Task UploadLivery(Livery livery, Stream tga, Stream jpeg)
+        public string GetPresignedPutUrlForLivery(Livery livery)
+        {
+            return GetPresignedPutRequest(GetFileName(livery, "tga"));
+        }
+
+        public async Task<Stream> GetTgaStreamFromLivery(Livery livery)
+        {
+            try
+            {
+                return await GetTgaStream(GetFileName(livery, "tga"));
+            } catch(Exception ex)
+            {
+                _logger.LogError("Issue reading tga from s3");
+                return null;
+            }
+        }
+
+        public async Task UploadPreview(Livery livery, Stream jpeg)
         {
             var watch = new Stopwatch();
             _logger.Log(LogLevel.Debug, "Beginning upload process to S3");
             watch.Start();
-            var tgaRequest = GetPutRequestForUpload(GetFileName(livery, "tga"), tga);
             var jpgRequest = GetPutRequestForUpload(GetFileName(livery, "jpeg"), jpeg);
             _logger.Log(LogLevel.Debug, $"Elapsed Time after generating put requests to S3: {watch.ElapsedMilliseconds}");
             try
             {
-                _logger.Log(LogLevel.Debug, "Beginning tga upload to S3");
-                var result = await _s3Client.PutObjectAsync(tgaRequest);
-                _logger.Log(LogLevel.Debug, $"Elapsed Time after tga upload to S3: {watch.ElapsedMilliseconds}");
                 _logger.Log(LogLevel.Debug, "Beginning jpg upload to S3");
-                result = await _s3Client.PutObjectAsync(jpgRequest);
+                var result = await _s3Client.PutObjectAsync(jpgRequest);
                 _logger.Log(LogLevel.Debug, $"Elapsed Time after jpg upload to S3: {watch.ElapsedMilliseconds}");
             }
             catch (AmazonS3Exception s3Ex)
@@ -91,11 +104,23 @@ namespace RaceSpotLiveryAPI.Services
             return _s3Client.GetPreSignedURL(request);
         }
 
+        private string GetPresignedPutRequest(string key)
+        {
+            var request = new GetPreSignedUrlRequest
+            {
+                BucketName = _bucketName,
+                Key = key,
+                Verb = HttpVerb.PUT,
+                Expires = DateTime.Now.AddMinutes(60)
+            };
+            return _s3Client.GetPreSignedURL(request);
+        }
+
         private string GetFileName(Livery livery, string fileType)
         {
             string id = livery.IsTeam() ? livery.ITeamId : livery.User.IracingId;
             string itemPath;
-            string teamPath = livery.IsTeam() ? "_team_" : "";
+            string teamPath = livery.IsTeam() ? "_team" : "";
             switch (livery.LiveryType)
             {
                 case LiveryType.Helmet:
@@ -146,6 +171,25 @@ namespace RaceSpotLiveryAPI.Services
             };
 
             var result = await _s3Client.PutObjectAsync(request);
+        }
+
+        private async Task<Stream> GetTgaStream(string key)
+        {
+            var request = new GetObjectRequest()
+            {
+                BucketName = _bucketName,
+                Key = key
+            };
+
+            var returnStream = new MemoryStream();
+
+            using (GetObjectResponse response = await _s3Client.GetObjectAsync(request))
+            using (Stream responseStream = response.ResponseStream)
+            {
+                responseStream.CopyTo(returnStream);
+                returnStream.Position = 0;
+                return returnStream;
+            }
         }
     }
 }

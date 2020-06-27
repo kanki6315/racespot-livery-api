@@ -15,6 +15,7 @@ namespace RaceSpotLiveryAPI.Entities
 
         public string ITeamId { get; set; }
         public string ITeamName { get; set; }
+        public UploadStatus Status { get; set; }
         public LiveryType LiveryType { get; set; }
         public virtual Series Series { get; set; }
         public Guid SeriesId { get; set; }
@@ -37,6 +38,11 @@ namespace RaceSpotLiveryAPI.Entities
         Helmet,
         [EnumMember(Value = "Spec Map")]
         SpecMap
+    }
+
+    public enum UploadStatus
+    {
+        WAITING, UPLOADED
     }
 
 }
