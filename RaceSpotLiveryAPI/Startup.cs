@@ -37,10 +37,11 @@ namespace RaceSpotLiveryAPI
         // This method gets called by the runtime. Use this method to add services to the container
         public void ConfigureServices(IServiceCollection services)
         {
+            //"http://localhost:4200", "http://racespot.media.s3-website.us-east-2.amazonaws.com/", "https://racespot.media"
             services.AddCors(options =>
             {
                 options.AddPolicy("LocalDev",
-                    builder => builder.WithOrigins("http://localhost:4200")
+                    builder => builder.WithOrigins("https://racespot.media")
                 .AllowAnyHeader()
                 .AllowAnyMethod());
             });

@@ -28,7 +28,8 @@ namespace RaceSpotLiveryAPI.Controllers
         [Authorize]
         public async Task<IActionResult> GetUser()
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == User.Identity.Name);
+            var user = await _context.Users
+                .Include(u => u.Invite).FirstOrDefaultAsync(u => u.UserName == User.Identity.Name);
             if (user == null)
             {
                 return Unauthorized();

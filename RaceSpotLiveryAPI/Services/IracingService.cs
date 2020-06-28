@@ -100,6 +100,11 @@ namespace RaceSpotLiveryAPI.Services
             {
                 throw new Exception($"Could not find driver with id {id}");
             }
+            return new IracingDriverModel
+            {
+                DriverName = HttpUtility.UrlDecode(nameJson["searchRacers"][0]["name"].ToString()).Replace("+", " "),
+                DriverId = id
+            };
             var getDetailsUrl = ConstructRequestUrl(
                 "memberstats/member/GetDriverStats",
                 new Dictionary<string, string>
@@ -145,7 +150,7 @@ namespace RaceSpotLiveryAPI.Services
 
             var team = new IracingTeamModel
             {
-                TeamName = teamNfo[0].GetValueOrDefault("teamname").Replace("+", " "),
+                TeamName = HttpUtility.UrlDecode(teamNfo[0].GetValueOrDefault("teamname").Replace("+", " ")),
                 TeamId = teamNfo[0].GetValueOrDefault("teamid").Replace("-", ""),
                 NumDrivers = teamNfo[0].GetValueOrDefault("rostercount"),
                 TeamOwner = teamNfo[0].GetValueOrDefault("displayname"),

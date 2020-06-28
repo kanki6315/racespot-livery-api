@@ -106,7 +106,7 @@ namespace RaceSpotLiveryAPI.Controllers
                     await _userManager.AddLoginAsync(user, info);
                 }
                 String jwtToken = getTokenFromEmail(email);
-                return Redirect($"https://racespotliveries.tv/#{jwtToken}");
+                return Redirect($"https://racespot.media/#token={jwtToken}");
             }
             else
             {
@@ -115,7 +115,7 @@ namespace RaceSpotLiveryAPI.Controllers
                 String jwtToken = getTokenFromEmail(email);
                 _logger.LogDebug("Redirecting");
                 Console.WriteLine("Redirecting");
-                return Redirect($"https://racespotliveries.tv/#{jwtToken}");
+                return Redirect($"https://racespot.media/#token={jwtToken}");
             }
         }
         [HttpPost]
@@ -185,7 +185,7 @@ namespace RaceSpotLiveryAPI.Controllers
             }
 
             var success = await _iracingService.SendPrivateMessage(wrapper.IracingId,
-                $"Click on the link to validate your RaceSpot Liveries Account! https://racespotliveries.tv/iracing-verification/?key={invite.Id}");
+                $"Click on the link to validate your RaceSpot Liveries Account! https://racespotliveries.tv/#key={invite.Id}");
             if(!success)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError,
