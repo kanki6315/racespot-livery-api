@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using RaceSpotLiveryAPI.Contexts;
+using RaceSpotLiveryAPI.DTOs;
 using RaceSpotLiveryAPI.Entities;
 using RaceSpotLiveryAPI.Models;
 using RaceSpotLiveryAPI.Services;
@@ -24,7 +25,7 @@ namespace RaceSpotLiveryAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [EnableCors("LocalDev")]
+    [EnableCors("CorsPolicy")]
     public class AccountsController : ControllerBase
     {
         private SymmetricSecurityKey _secretKey;
@@ -147,8 +148,9 @@ namespace RaceSpotLiveryAPI.Controllers
             var existingUser = _context.Users.FirstOrDefault(u => u.IracingId == wrapper.IracingId);
             if(existingUser != null)
             {
-                return BadRequest("User with iracing {id} has already been created");
+                return BadRequest($"User with iracing {wrapper.IracingId} has already been created");
             }
+
 
             var invite = _context.UserInvites.FirstOrDefault(u => u.UserId == user.Id && u.Status == InviteStatus.SENT);
             if(invite == null)
@@ -185,7 +187,7 @@ namespace RaceSpotLiveryAPI.Controllers
             }
 
             var success = await _iracingService.SendPrivateMessage(wrapper.IracingId,
-                $"Click on the link to validate your RaceSpot Liveries Account! https://racespotliveries.tv/#key={invite.Id}");
+                $"Click on the link to validate your RaceSpot Liveries Account! https://racespot.media/#key={invite.Id}");
             if(!success)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError,
@@ -241,7 +243,7 @@ namespace RaceSpotLiveryAPI.Controllers
             user.LastName = nameSplit[nameSplit.Length - 1];
             _context.SaveChanges();
 
-            return Ok();
+            return Ok(new UserDTO(user));
         }
 
         private string getTokenFromEmail(string emailAddress)

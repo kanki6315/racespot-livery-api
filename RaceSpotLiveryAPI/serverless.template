@@ -34,6 +34,13 @@
               "Path": "/",
               "Method": "ANY"
             }
+          },
+          "APIWarmingSchedule": {
+            "Type": "Schedule",
+            "Properties": {
+                "Schedule": "rate(5 minutes)",
+                "Input": "{ \"Resource\": \"WarmingLambda\", \"Body\": \"2\" }"
+            }
           }
         }
       }

@@ -23,7 +23,7 @@ namespace RaceSpotLiveryAPI.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
-    [EnableCors("LocalDev")]
+    [EnableCors("CorsPolicy")]
     public class LiveriesController : ControllerBase
     {
         private readonly RaceSpotDBContext _context;

@@ -40,7 +40,7 @@ namespace RaceSpotLiveryAPI
             //"http://localhost:4200", "http://racespot.media.s3-website.us-east-2.amazonaws.com/", "https://racespot.media"
             services.AddCors(options =>
             {
-                options.AddPolicy("LocalDev",
+                options.AddPolicy("CorsPolicy",
                     builder => builder.WithOrigins("https://racespot.media")
                 .AllowAnyHeader()
                 .AllowAnyMethod());

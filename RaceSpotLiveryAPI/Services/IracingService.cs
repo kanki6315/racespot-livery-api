@@ -67,7 +67,7 @@ namespace RaceSpotLiveryAPI.Services
                 new KeyValuePair<string, string>("attach_sig", "on"),
                 new KeyValuePair<string, string>("addbbcode24", "pm"),
                 new KeyValuePair<string, string>("addbbcode26", "pm"),
-                new KeyValuePair<string, string>("subject", "Livery API Test"),
+                new KeyValuePair<string, string>("subject", "racespot.media Account Verification"),
                 new KeyValuePair<string, string>("message", message)
             });
 

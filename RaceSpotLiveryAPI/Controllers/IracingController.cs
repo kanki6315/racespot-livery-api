@@ -14,7 +14,7 @@ namespace RaceSpotLiveryAPI.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    [EnableCors("LocalDev")]
+    [EnableCors("CorsPolicy")]
     public class IracingController : ControllerBase
     {
         private readonly IIracingService _iracingService;
