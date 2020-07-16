@@ -13,7 +13,6 @@ namespace RaceSpotLiveryAPI.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    [Authorize]
     [EnableCors("CorsPolicy")]
     public class IracingController : ControllerBase
     {
@@ -22,6 +21,27 @@ namespace RaceSpotLiveryAPI.Controllers
         public IracingController(IIracingService iracingService)
         {
             _iracingService = iracingService;
+        }
+        
+        [HttpGet]
+        [Route("clear-messages")]
+        public async Task<IActionResult> ClearMessages()
+        {
+            try
+            {
+                var success = await _iracingService.DeletePrivateMessages();
+                if (!success)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError,
+                        "Unable to delete sent messages from iRacing");
+                }
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
 
         [HttpPost]
@@ -39,6 +59,7 @@ namespace RaceSpotLiveryAPI.Controllers
 
         [HttpGet]
         [Route("driver", Name = nameof(GetIracingDriverDetailsById))]
+        [Authorize]
         public async Task<IActionResult> GetIracingDriverDetailsById([FromQuery] string iracingId)
         {
             try

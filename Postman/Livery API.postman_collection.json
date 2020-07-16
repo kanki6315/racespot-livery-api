@@ -14,13 +14,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{Host}}://{{BaseUrl}}/api/series/",
+							"raw": "{{Host}}://{{BaseUrl}}/series/",
 							"protocol": "{{Host}}",
 							"host": [
 								"{{BaseUrl}}"
 							],
 							"path": [
-								"api",
 								"series",
 								""
 							]
@@ -34,13 +33,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{Host}}://{{BaseUrl}}/api/series/18d266b6-86e6-49d9-888f-7086a946a9f6",
+							"raw": "{{Host}}://{{BaseUrl}}/series/18d266b6-86e6-49d9-888f-7086a946a9f6",
 							"protocol": "{{Host}}",
 							"host": [
 								"{{BaseUrl}}"
 							],
 							"path": [
-								"api",
 								"series",
 								"18d266b6-86e6-49d9-888f-7086a946a9f6"
 							]
@@ -69,13 +67,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{Host}}://{{BaseUrl}}/api/series/",
+							"raw": "{{Host}}://{{BaseUrl}}/series/",
 							"protocol": "{{Host}}",
 							"host": [
 								"{{BaseUrl}}"
 							],
 							"path": [
-								"api",
 								"series",
 								""
 							]
@@ -104,13 +101,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{Host}}://{{BaseUrl}}/api/series/07ad6841-4d25-4f54-8a43-c02994f542e5/",
+							"raw": "{{Host}}://{{BaseUrl}}/series/07ad6841-4d25-4f54-8a43-c02994f542e5/",
 							"protocol": "{{Host}}",
 							"host": [
 								"{{BaseUrl}}"
 							],
 							"path": [
-								"api",
 								"series",
 								"07ad6841-4d25-4f54-8a43-c02994f542e5",
 								""
@@ -137,13 +133,12 @@
 							}
 						],
 						"url": {
-							"raw": "{{Host}}://{{BaseUrl}}/api/cars/",
+							"raw": "{{Host}}://{{BaseUrl}}/cars/",
 							"protocol": "{{Host}}",
 							"host": [
 								"{{BaseUrl}}"
 							],
 							"path": [
-								"api",
 								"cars",
 								""
 							]
@@ -163,13 +158,12 @@
 							}
 						],
 						"url": {
-							"raw": "{{Host}}://{{BaseUrl}}/api/cars/8bdf85ae-0114-40fd-93ae-e8681a28670c",
+							"raw": "{{Host}}://{{BaseUrl}}/cars/8bdf85ae-0114-40fd-93ae-e8681a28670c",
 							"protocol": "{{Host}}",
 							"host": [
 								"{{BaseUrl}}"
 							],
 							"path": [
-								"api",
 								"cars",
 								"8bdf85ae-0114-40fd-93ae-e8681a28670c"
 							]
@@ -198,13 +192,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{Host}}://{{BaseUrl}}/api/cars/",
+							"raw": "{{Host}}://{{BaseUrl}}/cars/",
 							"protocol": "{{Host}}",
 							"host": [
 								"{{BaseUrl}}"
 							],
 							"path": [
-								"api",
 								"cars",
 								""
 							]
@@ -233,13 +226,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{Host}}://{{BaseUrl}}/api/cars/8bdf85ae-0114-40fd-93ae-e8681a28670c",
+							"raw": "{{Host}}://{{BaseUrl}}/cars/8bdf85ae-0114-40fd-93ae-e8681a28670c",
 							"protocol": "{{Host}}",
 							"host": [
 								"{{BaseUrl}}"
 							],
 							"path": [
-								"api",
 								"cars",
 								"8bdf85ae-0114-40fd-93ae-e8681a28670c"
 							]
@@ -268,13 +260,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{Host}}://{{BaseUrl}}/api/series/18d266b6-86e6-49d9-888f-7086a946a9f6/cars",
+							"raw": "{{Host}}://{{BaseUrl}}/series/18d266b6-86e6-49d9-888f-7086a946a9f6/cars",
 							"protocol": "{{Host}}",
 							"host": [
 								"{{BaseUrl}}"
 							],
 							"path": [
-								"api",
 								"series",
 								"18d266b6-86e6-49d9-888f-7086a946a9f6",
 								"cars"
@@ -310,13 +301,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{Host}}://{{BaseUrl}}/api/accounts/send-iracing-verification",
+							"raw": "{{Host}}://{{BaseUrl}}/accounts/send-iracing-verification",
 							"protocol": "{{Host}}",
 							"host": [
 								"{{BaseUrl}}"
 							],
 							"path": [
-								"api",
 								"accounts",
 								"send-iracing-verification"
 							]
@@ -345,13 +335,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{Host}}://{{BaseUrl}}/api/accounts/iracing-verification",
+							"raw": "{{Host}}://{{BaseUrl}}/accounts/iracing-verification",
 							"protocol": "{{Host}}",
 							"host": [
 								"{{BaseUrl}}"
 							],
 							"path": [
-								"api",
 								"accounts",
 								"iracing-verification"
 							]
@@ -386,14 +375,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{Host}}://{{BaseUrl}}/api/accounts/iracing/pm",
+							"raw": "{{Host}}://{{BaseUrl}}/iracing/pm",
 							"protocol": "{{Host}}",
 							"host": [
 								"{{BaseUrl}}"
 							],
 							"path": [
-								"api",
-								"accounts",
 								"iracing",
 								"pm"
 							]
@@ -403,9 +390,6 @@
 				},
 				{
 					"name": "Get Iracing Driver Details By ID",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
 					"request": {
 						"method": "GET",
 						"header": [
@@ -415,23 +399,13 @@
 								"type": "text"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\"userId\":\"139694\", \"message\": \"A test message\"}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
-							"raw": "{{Host}}://{{BaseUrl}}/api/iracing/driver?iracingId=139694",
+							"raw": "{{Host}}://{{BaseUrl}}/iracing/driver?iracingId=139694",
 							"protocol": "{{Host}}",
 							"host": [
 								"{{BaseUrl}}"
 							],
 							"path": [
-								"api",
 								"iracing",
 								"driver"
 							],
@@ -440,6 +414,31 @@
 									"key": "iracingId",
 									"value": "139694"
 								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Clear Messages",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{BearerToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{Host}}://{{BaseUrl}}/iracing/clear-messages",
+							"protocol": "{{Host}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"iracing",
+								"clear-messages"
 							]
 						}
 					},
@@ -457,13 +456,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{Host}}://{{BaseUrl}}/api/events/",
+							"raw": "{{Host}}://{{BaseUrl}}/events/",
 							"protocol": "{{Host}}",
 							"host": [
 								"{{BaseUrl}}"
 							],
 							"path": [
-								"api",
 								"events",
 								""
 							]
@@ -477,13 +475,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{Host}}://{{BaseUrl}}/api/series/18d266b6-86e6-49d9-888f-7086a946a9f6/events",
+							"raw": "{{Host}}://{{BaseUrl}}/series/18d266b6-86e6-49d9-888f-7086a946a9f6/events",
 							"protocol": "{{Host}}",
 							"host": [
 								"{{BaseUrl}}"
 							],
 							"path": [
-								"api",
 								"series",
 								"18d266b6-86e6-49d9-888f-7086a946a9f6",
 								"events"
@@ -513,13 +510,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{Host}}://{{BaseUrl}}/api/series/18d266b6-86e6-49d9-888f-7086a946a9f6/events",
+							"raw": "{{Host}}://{{BaseUrl}}/series/18d266b6-86e6-49d9-888f-7086a946a9f6/events",
 							"protocol": "{{Host}}",
 							"host": [
 								"{{BaseUrl}}"
 							],
 							"path": [
-								"api",
 								"series",
 								"18d266b6-86e6-49d9-888f-7086a946a9f6",
 								"events"
@@ -549,13 +545,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{Host}}://{{BaseUrl}}/api/events/6687c50c-0efc-42c2-a846-8080926f3ad5",
+							"raw": "{{Host}}://{{BaseUrl}}/events/6687c50c-0efc-42c2-a846-8080926f3ad5",
 							"protocol": "{{Host}}",
 							"host": [
 								"{{BaseUrl}}"
 							],
 							"path": [
-								"api",
 								"events",
 								"6687c50c-0efc-42c2-a846-8080926f3ad5"
 							]
@@ -581,13 +576,12 @@
 							}
 						],
 						"url": {
-							"raw": "{{Host}}://{{BaseUrl}}/api/liveries/",
+							"raw": "{{Host}}://{{BaseUrl}}/liveries/",
 							"protocol": "{{Host}}",
 							"host": [
 								"{{BaseUrl}}"
 							],
 							"path": [
-								"api",
 								"liveries",
 								""
 							]
@@ -607,13 +601,12 @@
 							}
 						],
 						"url": {
-							"raw": "{{Host}}://{{BaseUrl}}/api/series/18d266b6-86e6-49d9-888f-7086a946a9f6/liveries/",
+							"raw": "{{Host}}://{{BaseUrl}}/series/18d266b6-86e6-49d9-888f-7086a946a9f6/liveries/",
 							"protocol": "{{Host}}",
 							"host": [
 								"{{BaseUrl}}"
 							],
 							"path": [
-								"api",
 								"series",
 								"18d266b6-86e6-49d9-888f-7086a946a9f6",
 								"liveries",
@@ -635,13 +628,12 @@
 							}
 						],
 						"url": {
-							"raw": "{{Host}}://{{BaseUrl}}/api/liveries/a372564b-1d27-4a64-9cce-c95b3f91ea3e",
+							"raw": "{{Host}}://{{BaseUrl}}/liveries/a372564b-1d27-4a64-9cce-c95b3f91ea3e",
 							"protocol": "{{Host}}",
 							"host": [
 								"{{BaseUrl}}"
 							],
 							"path": [
-								"api",
 								"liveries",
 								"a372564b-1d27-4a64-9cce-c95b3f91ea3e"
 							]
@@ -661,39 +653,51 @@
 							}
 						],
 						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "type",
-									"value": "Car",
-									"type": "text"
-								},
-								{
-									"key": "iTeamId",
-									"value": "",
-									"type": "text"
-								},
-								{
-									"key": "file",
-									"type": "file",
-									"src": "/C:/Users/kanki/Google Drive/Artifact Racing/Designs/Powerslide/car_#artifactINDYV2.tga"
+							"mode": "raw",
+							"raw": "{\"iTeamId\": 122271, \"carId\": \"78434845-0f22-4bae-813f-7b71b0aad4ce\", \"liveryType\": \"Car\"}",
+							"options": {
+								"raw": {
+									"language": "json"
 								}
-							]
+							}
 						},
 						"url": {
-							"raw": "{{Host}}://{{BaseUrl}}/api/series/18d266b6-86e6-49d9-888f-7086a946a9f6/cars/d09df87c-3b47-45e9-b875-4fb5656f440f/liveries/",
+							"raw": "{{Host}}://{{BaseUrl}}/series/07ad6841-4d25-4f54-8a43-c02994f542e5/liveries/",
 							"protocol": "{{Host}}",
 							"host": [
 								"{{BaseUrl}}"
 							],
 							"path": [
-								"api",
 								"series",
-								"18d266b6-86e6-49d9-888f-7086a946a9f6",
-								"cars",
-								"d09df87c-3b47-45e9-b875-4fb5656f440f",
+								"07ad6841-4d25-4f54-8a43-c02994f542e5",
 								"liveries",
 								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Finalize Livery",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{BearerToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{Host}}://{{BaseUrl}}/liveries/86d63fa0-a49d-4905-90dd-806678406513/finalize",
+							"protocol": "{{Host}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"liveries",
+								"86d63fa0-a49d-4905-90dd-806678406513",
+								"finalize"
 							]
 						}
 					},

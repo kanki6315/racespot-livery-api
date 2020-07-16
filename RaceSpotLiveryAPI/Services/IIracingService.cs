@@ -10,6 +10,7 @@ namespace RaceSpotLiveryAPI.Services
     {
         Task<IracingDriverModel> LookupIracingDriverById(string id);
         Task<bool> SendPrivateMessage(string userId, string message);
+        Task<bool> DeletePrivateMessages();
         Task<IracingTeamModel> LookupIracingTeamById(String id, bool findDrivers);
     }
 }
