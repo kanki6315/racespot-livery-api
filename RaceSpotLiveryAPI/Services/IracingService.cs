@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -21,6 +22,7 @@ namespace RaceSpotLiveryAPI.Services
         private readonly string _iracingUsername;
 
         private const string IracingBaseUrl = "members.iracing.com";
+        private const string REGEX_PATTERN = "<a href=\"/jforum/pm/read/[0-9]+.page\">";
 
         private bool _isLoggedIn;
 
@@ -71,6 +73,50 @@ namespace RaceSpotLiveryAPI.Services
                 new KeyValuePair<string, string>("message", message)
             });
 
+            var response = await _httpClient.PostAsync(ConstructRequestUrl("jforum/jforum.page"), formContent);
+            return response.IsSuccessStatusCode;
+        }
+        
+        public async Task<bool> DeletePrivateMessages()
+        {
+            if (!_isLoggedIn)
+            {
+                try
+                {
+                    await Login();
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }
+
+            var getResponse = await _httpClient.GetAsync(ConstructRequestUrl("jforum/pm/sentbox.page"));
+            if (!getResponse.IsSuccessStatusCode)
+            {
+                throw new Exception("Unable to get messages from iRacing");
+            }
+            var stringResponse = await getResponse.Content.ReadAsStringAsync();
+            MatchCollection matches = Regex.Matches(stringResponse, REGEX_PATTERN);
+            Console.WriteLine("there was {0} matches for '{1}'", matches.Count, REGEX_PATTERN);
+            if (matches.Count == 0)
+            {
+                return true;
+            }
+            var idList = new List<string>();
+            foreach (Match match in matches)
+            {
+                idList.Add(GetMessageId(match.Value));
+            }
+            var kvpList = new List<KeyValuePair<string, string>>();
+            foreach (var id in idList)
+            {
+                kvpList.Add(new KeyValuePair<string, string>("id", id));
+            }
+            kvpList.Add( new KeyValuePair<string, string>("action", "delete"));
+            kvpList.Add(new KeyValuePair<string, string>("module", "pm"));
+            kvpList.Add(new KeyValuePair<string, string>("delete", "+Delete+Selected+"));
+            var formContent = new FormUrlEncodedContent(kvpList);
             var response = await _httpClient.PostAsync(ConstructRequestUrl("jforum/jforum.page"), formContent);
             return response.IsSuccessStatusCode;
         }
@@ -284,6 +330,11 @@ namespace RaceSpotLiveryAPI.Services
         {
             var builder = new UriBuilder("https", IracingBaseUrl) { Path = path };
             return builder.ToString();
+        }
+        
+        private string GetMessageId(string input)
+        {
+            return new string(input.Where(char.IsDigit).ToArray());
         }
     }
 }
