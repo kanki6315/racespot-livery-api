@@ -23,7 +23,7 @@ namespace RaceSpotLiveryAPI.Controllers
             _iracingService = iracingService;
         }
         
-        [HttpGet]
+        [HttpPost]
         [Route("clear-messages")]
         public async Task<IActionResult> ClearMessages()
         {
