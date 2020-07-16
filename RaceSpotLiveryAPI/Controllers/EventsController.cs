@@ -32,7 +32,7 @@ namespace RaceSpotLiveryAPI.Controllers
         }
 
         [HttpGet]
-        [Route("~/api/series/{seriesId}/events")]
+        [Route("~/series/{seriesId}/events")]
 
         public IActionResult GetAllBySeriesId([FromRoute] Guid seriesId)
         {
@@ -42,7 +42,7 @@ namespace RaceSpotLiveryAPI.Controllers
         }
 
         [HttpPost]
-        [Route("~/api/series/{seriesId}/events")]
+        [Route("~/series/{seriesId}/events")]
         [Authorize(Policy = "GlobalAdmin")]
         public IActionResult Post([FromBody] EventDTO dto)
         {

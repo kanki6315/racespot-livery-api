@@ -51,7 +51,7 @@ namespace RaceSpotLiveryAPI.Controllers
         }
 
         [HttpGet]
-        [Route("~/api/series/{seriesId}/liveries")]
+        [Route("~/series/{seriesId}/liveries")]
         public IActionResult GetAllForSeries([FromRoute] Guid seriesId)
         {
             var user = _context.Users.FirstOrDefault(u => u.UserName == User.Identity.Name);
@@ -66,7 +66,7 @@ namespace RaceSpotLiveryAPI.Controllers
         }
 
         [HttpPost]
-        [Route("~/api/series/{seriesId}/liveries")]
+        [Route("~/series/{seriesId}/liveries")]
         public async Task<IActionResult> Post([FromRoute] Guid seriesId, [FromBody] LiveryDTO dto)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == User.Identity.Name);
@@ -301,7 +301,7 @@ namespace RaceSpotLiveryAPI.Controllers
         }
 
         /*[HttpGet]
-        [Route("~/api/series/{seriesId}/liveries")]
+        [Route("~/series/{seriesId}/liveries")]
         public IActionResult GetByITeamId([FromRoute] Guid seriesId, [FromQuery] LiveryType type, [FromQuery] string iTeamId)
         {
             var livery = _context.Liveries.FirstOrDefault(l => l.SeriesId == seriesId
