@@ -60,17 +60,8 @@ namespace RaceSpotLiveryAPI.Controllers
                 return Unauthorized();
             }
 
-            List<LiveryDTO> liveries;
-            if (user.IsAdmin)
-            {
-                liveries = _context.Liveries.Where(l => l.SeriesId == seriesId).Include(l => l.Car)
-                .ToList().Select(t => new LiveryDTO(t, _s3Service.GetPreview(t))).ToList();
-            }
-            else
-            {
-                liveries = _context.Liveries.Where(l => l.SeriesId == seriesId && l.UserId == user.Id).Include(l => l.Car)
+            List<LiveryDTO> liveries = _context.Liveries.Where(l => l.SeriesId == seriesId && l.UserId == user.Id).Include(l => l.Car)
                     .ToList().Select(t => new LiveryDTO(t, _s3Service.GetPreview(t))).ToList();
-            }
             return Ok(liveries);
         }
 
@@ -87,12 +78,16 @@ namespace RaceSpotLiveryAPI.Controllers
             {
                 return Forbid("User has not verified iRacing account yet");
             }
+            if(!dto.CarId.HasValue && (dto.LiveryType == LiveryType.Car || dto.LiveryType == LiveryType.SpecMap))
+            {
+                return BadRequest("Car livery must have carId in request");
+            }
             var series = await _context.Series.FirstOrDefaultAsync(s => s.Id == seriesId);
             if (series == null)
             {
                 return NotFound($"Could not find series with id {seriesId}");
             }
-            if (series.IsTeam && String.IsNullOrEmpty(dto.ITeamId))
+            if (series.IsTeam && (String.IsNullOrEmpty(dto.ITeamId) && dto.LiveryType != LiveryType.Helmet))
             {
                 return BadRequest("Series is a team series but no Team ID was provided");
             }
@@ -105,12 +100,12 @@ namespace RaceSpotLiveryAPI.Controllers
             if (String.IsNullOrEmpty(dto.ITeamId))
             {
                 livery = _context.Liveries.Include(l => l.Car).FirstOrDefault(l => l.SeriesId == seriesId
-                    && l.CarId == dto.CarId && l.UserId == user.Id && l.LiveryType == dto.LiveryType);
+                    && l.UserId == user.Id && l.LiveryType == dto.LiveryType && String.IsNullOrEmpty(l.ITeamId));
             }
             else
             {
                 livery = _context.Liveries.Include(l => l.Car).FirstOrDefault(l => l.SeriesId == seriesId
-                    && l.CarId == dto.CarId && l.ITeamId == dto.ITeamId && l.LiveryType == dto.LiveryType);
+                    && l.ITeamId == dto.ITeamId && l.LiveryType == dto.LiveryType);
             }
             if (livery == null)
             {
@@ -129,23 +124,12 @@ namespace RaceSpotLiveryAPI.Controllers
                     catch (Exception ex)
                     {
                         return StatusCode(StatusCodes.Status500InternalServerError,
-                            new { message = "Unable to verify user owns team. Please contact Support for assistance." });
+                            "Unable to verify user owns team. Please contact Support for assistance.");
                     }
                 }
-                var car = await _context.Cars.Include(c => c.SeriesCars).FirstOrDefaultAsync(c => c.Id == dto.CarId);
-                if (car == null)
-                {
-                    return NotFound($"Could not find car with id {dto.CarId}");
-                }
-                if (car.SeriesCars.Where(s => s.SeriesId == seriesId).Count() == 0)
-                {
-                    return BadRequest("Car is not in series");
-                }
-
                 livery = new Livery()
                 {
                     SeriesId = seriesId,
-                    CarId = dto.CarId,
                     ITeamId = dto.ITeamId,
                     ITeamName = teamName,
                     LiveryType = dto.LiveryType,
@@ -153,6 +137,20 @@ namespace RaceSpotLiveryAPI.Controllers
                     UserId = user.Id,
                     Status = UploadStatus.WAITING
                 };
+                if (dto.CarId.HasValue)
+                {
+                    var car = await _context.Cars.Include(c => c.SeriesCars).FirstOrDefaultAsync(c => c.Id == dto.CarId.Value);
+                    if (car == null)
+                    {
+                        return NotFound($"Could not find car with id {dto.CarId}");
+                    }
+                    if (car.SeriesCars.Where(s => s.SeriesId == seriesId).Count() == 0)
+                    {
+                        return BadRequest("Car is not in series");
+                    }
+                    livery.CarId = dto.CarId.Value;
+                    livery.Car = car;
+                }
                 _context.Liveries.Add(livery);
                 _context.SaveChanges();
             }
@@ -161,6 +159,25 @@ namespace RaceSpotLiveryAPI.Controllers
                 if (!String.IsNullOrEmpty(dto.ITeamId) && livery.UserId != user.Id)
                 {
                     return BadRequest("You are not the original uploader of the livery");
+                }
+                if(dto.CarId.HasValue && dto.CarId.Value != livery.CarId)
+                {
+                    var car = await _context.Cars.Include(c => c.SeriesCars).FirstOrDefaultAsync(c => c.Id == dto.CarId.Value);
+                    if (car == null)
+                    {
+                        return NotFound($"Could not find car with id {dto.CarId}");
+                    }
+                    if (car.SeriesCars.Where(s => s.SeriesId == seriesId).Count() == 0)
+                    {
+                        return BadRequest("Car is not in series");
+                    }
+                    var specMap = _context.Liveries.FirstOrDefault(l => l.LiveryType == LiveryType.SpecMap && l.SeriesId == seriesId && l.ITeamId == livery.ITeamId);
+                    if (specMap != null)
+                    {
+                        _context.Liveries.Remove(specMap);
+                    }
+                    livery.CarId = dto.CarId.Value;
+                    livery.Car = car;
                 }
                 livery.Status = UploadStatus.WAITING;
                 _context.SaveChanges();
@@ -186,33 +203,87 @@ namespace RaceSpotLiveryAPI.Controllers
                 return BadRequest("Livery is not in Waiting status");
             }
 
-            var watch = new Stopwatch();
-            _logger.Log(LogLevel.Debug, "Beginning tga to img conversion");
-            watch.Start();
+            if (livery.LiveryType != LiveryType.SpecMap)
+            {
+                var outputStream = new MemoryStream();
+                try
+                {
+                    var watch = new Stopwatch();
+                    _logger.Log(LogLevel.Debug, "Beginning tga to img conversion");
+                    watch.Start();
 
-            var tgaStream = await _s3Service.GetTgaStreamFromLivery(livery);
-            var outputStream = new MemoryStream();
-            tgaStream.Position = 0;
-            using (var image = Image.Load(tgaStream))
-            {
-                image.SaveAsJpeg(outputStream, new JpegEncoder() { Quality = 80 });
-            }
-            _logger.Log(LogLevel.Debug, $"Elapsed Time after converting to jpeg: {watch.ElapsedMilliseconds}");
-            outputStream.Position = 0;
-            _logger.Log(LogLevel.Debug, $"Elapsed Time after resetting stream: {watch.ElapsedMilliseconds}");
-            try
-            {
-                await _s3Service.UploadPreview(livery, outputStream);
-            }
-            catch (Exception)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    new { message = "An error occured uploading the file. Please contact Support for assistance." });
+                    var tgaStream = await _s3Service.GetTgaStreamFromLivery(livery);
+                    tgaStream.Position = 0;
+                    using (var image = Image.Load(tgaStream))
+                    {
+                        image.SaveAsJpeg(outputStream, new JpegEncoder() { Quality = 80 });
+                    }
+                    _logger.Log(LogLevel.Debug, $"Elapsed Time after converting to jpeg: {watch.ElapsedMilliseconds}");
+                    outputStream.Position = 0;
+                    _logger.Log(LogLevel.Debug, $"Elapsed Time after resetting stream: {watch.ElapsedMilliseconds}");
+                } catch (Exception)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError,
+                        "An error occured converting the tga to a thumbnail. Please contact Support for assistance.");
+                }
+                try
+                {
+                    await _s3Service.UploadPreview(livery, outputStream);
+                }
+                catch (Exception)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError,
+                        "An error occured uploading the thumbnail. Please contact Support for assistance.");
+                }
             }
             livery.Status = UploadStatus.UPLOADED;
             await _context.SaveChangesAsync();
 
             return Ok(new LiveryDTO(livery, _s3Service.GetPreview(livery)));
+        }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public IActionResult DeleteById([FromRoute] Guid id)
+        {
+            var user = _context.Users.FirstOrDefault(u => u.UserName == User.Identity.Name);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+            else if (String.IsNullOrEmpty(user.IracingId))
+            {
+                return Forbid("User has not verified iRacing account yet");
+            }
+            var livery = _context.Liveries.Include(l => l.Car)
+                .Include(l => l.User).FirstOrDefault(l => l.Id == id);
+            if (livery == null)
+            {
+                return NotFound($"Unable to find livery with id {id}");
+            }
+            if (livery.UserId != user.Id)
+            {
+                return BadRequest("You are not the original uploader of the livery");
+            }
+            if (livery.LiveryType == LiveryType.Car)
+            {
+                var specMap = _context.Liveries.Include(l => l.Car).FirstOrDefault(l => 
+                    l.LiveryType == LiveryType.SpecMap && 
+                    l.UserId == user.Id && 
+                    l.SeriesId == livery.SeriesId && 
+                    l.CarId == livery.CarId);
+
+                if (specMap != null)
+                {
+                    _s3Service.DeleteLivery(specMap);
+                    _context.Liveries.Remove(specMap);
+                }
+            }
+            _s3Service.DeleteLivery(livery);
+            _context.Liveries.Remove(livery);
+            _context.SaveChanges();
+
+            return Ok();
         }
 
         [HttpGet]

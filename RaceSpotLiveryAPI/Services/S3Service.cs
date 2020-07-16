@@ -38,6 +38,10 @@ namespace RaceSpotLiveryAPI.Services
 
         public string GetPresignedPutUrlForLivery(Livery livery)
         {
+            if(livery.LiveryType == LiveryType.SpecMap)
+            {
+                return GetPresignedPutRequest(GetFileName(livery, "mip"));
+            }
             return GetPresignedPutRequest(GetFileName(livery, "tga"));
         }
 
@@ -50,6 +54,31 @@ namespace RaceSpotLiveryAPI.Services
             {
                 _logger.LogError("Issue reading tga from s3");
                 return null;
+            }
+        }
+
+        public async Task DeleteLivery(Livery livery)
+        {
+            try
+            {
+                if (livery.LiveryType != LiveryType.SpecMap)
+                {
+                    var tgaRequest = GetDeleteObjectRequest(GetFileName(livery, "tga"));
+                    var tgaResult = await _s3Client.DeleteObjectAsync(tgaRequest);
+                    var jpegRequest = GetDeleteObjectRequest(GetFileName(livery, "jpeg"));
+                    var jpegResult = await _s3Client.DeleteObjectAsync(jpegRequest);
+                } 
+                else
+                {
+                    var mipRequest = GetDeleteObjectRequest(GetFileName(livery, "mip"));
+                    var mipResult = await _s3Client.DeleteObjectAsync(mipRequest);
+                }
+            }
+            catch (AmazonS3Exception s3Ex)
+            {
+                Console.WriteLine("Error encountered ***. Message:'{0}' when writing an object"
+                    , s3Ex.Message);
+                throw;
             }
         }
 
@@ -78,6 +107,10 @@ namespace RaceSpotLiveryAPI.Services
 
         public string GetPreview(Livery livery)
         {
+            if(livery.LiveryType == LiveryType.SpecMap)
+            {
+                return "";
+            }
             return GetPresignedGetRequest(GetFileName(livery, "jpeg"));
         }
 
@@ -116,6 +149,15 @@ namespace RaceSpotLiveryAPI.Services
             return _s3Client.GetPreSignedURL(request);
         }
 
+        private DeleteObjectRequest GetDeleteObjectRequest(string key)
+        {
+            var request = new DeleteObjectRequest()
+            {
+                BucketName = _bucketName,
+                Key = key
+            };
+            return request;
+        }
         private string GetFileName(Livery livery, string fileType)
         {
             string id = livery.IsTeam() ? livery.ITeamId : livery.User.IracingId;
@@ -138,7 +180,13 @@ namespace RaceSpotLiveryAPI.Services
                     break;
             }
 
-            return $"{livery.SeriesId}/{livery.Car.Path}/{itemPath}{teamPath}_{id}.{fileType}";
+            if (livery.LiveryType == LiveryType.Car || livery.LiveryType == LiveryType.SpecMap)
+            {
+                return $"{livery.SeriesId}/{livery.Car.Path}/{itemPath}{teamPath}_{id}.{fileType}";
+            } else
+            {
+                return $"{livery.SeriesId}/{itemPath}{teamPath}_{id}.{fileType}";
+            }
         }
 
         public async Task<Dictionary<string, string>> GetIracingCredentialsFromS3Async()

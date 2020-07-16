@@ -29,7 +29,7 @@ namespace RaceSpotLiveryAPI.Controllers
         public IActionResult GetAllActiveSeries()
         {
             var series = _context.Series.Where(s => !s.IsArchived)
-                    .ToList().Select(s => new SeriesDTO(s)).ToList();
+                    .ToList().OrderBy(s => s.Name).Select(s => new SeriesDTO(s)).ToList();
             return Ok(series);
         }
 

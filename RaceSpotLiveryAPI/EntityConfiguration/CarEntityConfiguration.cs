@@ -19,7 +19,8 @@ namespace RaceSpotLiveryAPI.EntityConfiguration
 
             builder.HasMany(p => p.Liveries)
                 .WithOne(l => l.Car)
-                .IsRequired();
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
 
             builder.HasKey(p => p.Id);
         }

@@ -43,6 +43,6 @@ namespace RaceSpotLiveryAPI.DTOs
         public string UploadUrl { get; set; }
         public string PreviewUrl { get; set; }
         public string CarName { get; set; }
-        public Guid CarId { get; set; }
+        public Guid? CarId { get; set; }
     }
 }

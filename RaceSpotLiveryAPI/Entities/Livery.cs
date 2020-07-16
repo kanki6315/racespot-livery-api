@@ -20,7 +20,7 @@ namespace RaceSpotLiveryAPI.Entities
         public virtual Series Series { get; set; }
         public Guid SeriesId { get; set; }
         public virtual Car Car { get; set; }
-        public Guid CarId { get; set; }
+        public Guid? CarId { get; set; }
         public virtual ApplicationUser User { get; set; }
         public string UserId { get; set; }
         public Guid Id { get; set; }

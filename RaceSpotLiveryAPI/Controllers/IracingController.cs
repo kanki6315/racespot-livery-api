@@ -32,8 +32,7 @@ namespace RaceSpotLiveryAPI.Controllers
             var success = await _iracingService.SendPrivateMessage(pm.UserId, pm.Message);
             if(!success)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    new { message = "An error occured sending a PM. Please contact Support for assistance." });
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occured sending a PM. Please contact Support for assistance.");
             }
             return Ok();
         }

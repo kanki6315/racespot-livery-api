@@ -9,6 +9,7 @@ namespace RaceSpotLiveryAPI.Services
 {
     public interface IS3Service
     {
+        Task DeleteLivery(Livery livery);
         string GetPresignedPutUrlForLivery(Livery livery);
         Task<Stream> GetTgaStreamFromLivery(Livery livery);
         Task UploadPreview(Livery livery, Stream thumbnail);

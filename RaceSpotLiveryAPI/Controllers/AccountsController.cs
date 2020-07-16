@@ -186,15 +186,23 @@ namespace RaceSpotLiveryAPI.Controllers
                 invite.LastUpdated = DateTime.UtcNow;
             }
 
-            var success = await _iracingService.SendPrivateMessage(wrapper.IracingId,
+            try
+            {
+                var success = await _iracingService.SendPrivateMessage(wrapper.IracingId,
                 $"Click on the link to validate your RaceSpot Liveries Account! https://racespot.media/#key={invite.Id}");
-            if(!success)
+                if (!success)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError,
+                        "An error occured sending a PM. Please contact Support for assistance.");
+                }
+                _context.SaveChanges();
+                return Ok();
+            }
+            catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    new { message = "An error occured sending a PM. Please contact Support for assistance." });
+                    "There was an internal error that prevented a PM from being sent. Please contact Support for assistance.");
             }
-            _context.SaveChanges();
-            return Ok();
         }
 
         [HttpPost]
@@ -232,7 +240,7 @@ namespace RaceSpotLiveryAPI.Controllers
             catch(Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    new { message = "An error occured pulling driver details from iRacing. Please contact Support for assistance." });
+                    "An error occured pulling driver details from iRacing. Please contact Support for assistance.");
             }
 
             invite.Status = InviteStatus.DONE;
