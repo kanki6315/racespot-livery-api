@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace RaceSpotLiveryAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [EnableCors("CorsPolicy")]
     public class UsersController : ControllerBase
     {

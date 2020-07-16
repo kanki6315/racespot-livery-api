@@ -11,7 +11,7 @@ using RaceSpotLiveryAPI.Services;
 
 namespace RaceSpotLiveryAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     [Authorize]
     [EnableCors("CorsPolicy")]
