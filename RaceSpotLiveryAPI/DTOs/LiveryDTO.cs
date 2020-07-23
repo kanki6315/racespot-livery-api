@@ -26,6 +26,13 @@ namespace RaceSpotLiveryAPI.DTOs
             {
                 CarName = livery.Car.Name;
             }
+
+            if (livery.User != null)
+            {
+                UserId = livery.User.Id;
+                FirstName = livery.User.FirstName;
+                LastName = livery.User.LastName;
+            }
         }
 
         public LiveryDTO(Livery livery, string PreviewUrl) : this(livery)
@@ -44,5 +51,8 @@ namespace RaceSpotLiveryAPI.DTOs
         public string PreviewUrl { get; set; }
         public string CarName { get; set; }
         public Guid? CarId { get; set; }
+        public string UserId { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
     }
 }

@@ -52,7 +52,7 @@ namespace RaceSpotLiveryAPI.Controllers
 
         [HttpGet]
         [Route("~/series/{seriesId}/liveries")]
-        public IActionResult GetAllForSeries([FromRoute] Guid seriesId)
+        public IActionResult GetAllForSeries([FromRoute] Guid seriesId, [FromQuery] bool showAll=false)
         {
             var user = _context.Users.FirstOrDefault(u => u.UserName == User.Identity.Name);
             if (user == null)
@@ -60,9 +60,20 @@ namespace RaceSpotLiveryAPI.Controllers
                 return Unauthorized();
             }
 
-            List<LiveryDTO> liveries = _context.Liveries.Where(l => l.SeriesId == seriesId && l.UserId == user.Id).Include(l => l.Car)
+            if (!user.IsAdmin || !showAll)
+            {
+                List<LiveryDTO> liveries = _context.Liveries.Where(l => l.SeriesId == seriesId && l.UserId == user.Id)
+                    .Include(l => l.Car)
                     .ToList().Select(t => new LiveryDTO(t, _s3Service.GetPreview(t))).ToList();
-            return Ok(liveries);
+                return Ok(liveries);
+            }
+            
+            List<LiveryDTO> allLiveries = _context.Liveries.Where(l => l.SeriesId == seriesId)
+                .Include(l => l.Car)
+                .Include(l => l.User)
+                .ToList().Select(t => new LiveryDTO(t, _s3Service.GetPreview(t))).ToList();
+            return Ok(allLiveries);
+            // TODO: Implement endpoint that aggregates liveries per user or per team for pagination in admin UI
         }
 
         [HttpPost]
