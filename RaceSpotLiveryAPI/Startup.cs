@@ -41,7 +41,7 @@ namespace RaceSpotLiveryAPI
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy",
-                    builder => builder.WithOrigins("https://racespot.media")
+                    builder => builder.WithOrigins(Configuration["BaseUrl"])
                 .AllowAnyHeader()
                 .AllowAnyMethod());
             });

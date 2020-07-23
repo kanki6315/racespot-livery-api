@@ -26,11 +26,31 @@ namespace RaceSpotLiveryAPI.Controllers
 
 
         [HttpGet]
-        public IActionResult GetAllActiveSeries()
+        public IActionResult GetAllActiveSeries([FromQuery] bool showArchived=false, [FromQuery] int offset=0, [FromQuery] int limit=10)
         {
-            var series = _context.Series.Where(s => !s.IsArchived)
+            var user = _context.Users.FirstOrDefault(u => u.UserName == User.Identity.Name);
+            if (user == null || !user.IsAdmin) 
+            {
+                var series = _context.Series.Where(s => !s.IsArchived)
+                        .ToList().OrderBy(s => s.Name).Select(s => new SeriesDTO(s)).ToList();
+                return Ok(series);
+            }
+
+            if (!showArchived)
+            {
+                var series = _context.Series.Where(s => !s.IsArchived)
+                    .Include(s => s.SeriesCars)
+                    .ThenInclude(s => s.Car)
                     .ToList().OrderBy(s => s.Name).Select(s => new SeriesDTO(s)).ToList();
-            return Ok(series);
+                return Ok(series);
+            } 
+            else {
+                var series = _context.Series
+                    .Include(s => s.SeriesCars)
+                    .ThenInclude(s => s.Car)
+                    .OrderBy(s => s.Name).Skip(offset).Take(limit).ToList().Select(s => new SeriesDTO(s)).ToList();
+                return Ok(series);
+            }
         }
 
         [HttpPost]
@@ -67,11 +87,11 @@ namespace RaceSpotLiveryAPI.Controllers
                         Car = car,
                         CarId = car.Id
                     };
+                    _context.SeriesCars.Add(seriesCar);
                     list.Add(seriesCar);
                 }
-                _context.AddRangeAsync(list);
-                _context.SaveChangesAsync();
                 series.SeriesCars = list;
+                _context.SaveChanges();
             }
 
             return Ok(new SeriesDTO(series));
@@ -82,6 +102,11 @@ namespace RaceSpotLiveryAPI.Controllers
         [Authorize(Policy = "GlobalAdmin")]
         public IActionResult Put([FromBody] SeriesDTO dto, [FromRoute] Guid id)
         {
+            var cars = dto.CarIds.Count == 0 ? new List<Car>() :_context.Cars.Where(c => dto.CarIds.Contains(c.Id)).ToList();
+            if(cars.Count != dto.CarIds.Count)
+            {
+                return BadRequest("Unable to find all the car ids for the series");
+            }
             var existing = _context.Series
                 .Include(s => s.SeriesCars).ThenInclude(s => s.Car).FirstOrDefault(s => s.Id == id);
             if(existing == null)
@@ -94,49 +119,41 @@ namespace RaceSpotLiveryAPI.Controllers
             existing.LogoImgUrl = dto.LogoImgUrl;
             existing.Description = dto.Description;
             _context.SaveChanges();
-            return Ok(new SeriesDTO(existing));
-        }
 
-        [HttpPut]
-        [Route("{id}/cars")]
-        [Authorize(Policy = "GlobalAdmin")]
-        public IActionResult PutCars([FromRoute] Guid id, [FromBody] List<Guid> carIds)
-        {
-            var existing = _context.Series.FirstOrDefault(s => s.Id == id);
-            if (existing == null)
+            if (cars.Count > 0)
             {
-                return NotFound($"Series with id {id} was not found");
-            }
-            var existingSeriesCars = _context.SeriesCars.Where(s => s.SeriesId == id).Include(c => c.Car);
-            var seriesCars = new List<SeriesCar>();
-            foreach (var seriesCar in existingSeriesCars)
-            {
-                if (!carIds.Contains(seriesCar.CarId))
+                var existingSeriesCars = _context.SeriesCars.Where(s => s.SeriesId == id).Include(c => c.Car);
+                var seriesCars = new List<SeriesCar>();
+                var carIds = dto.CarIds;
+                foreach (var seriesCar in existingSeriesCars)
                 {
-                    _context.SeriesCars.Remove(seriesCar);
-                } 
-                else
+                    if (!carIds.Contains(seriesCar.CarId))
+                    {
+                        _context.SeriesCars.Remove(seriesCar);
+                    }
+                    else
+                    {
+                        seriesCars.Add(seriesCar);
+                    }
+                }
+
+                var newCarIds = carIds.Where(c => existingSeriesCars.Where(s => s.CarId == c).Count() == 0).ToList();
+                foreach (var car in newCarIds)
                 {
+                    SeriesCar seriesCar = new SeriesCar
+                    {
+                        Series = existing,
+                        SeriesId = existing.Id,
+                        Car = cars.First(c => c.Id == car),
+                        CarId = car
+                    };
+                    _context.SeriesCars.Add(seriesCar);
                     seriesCars.Add(seriesCar);
                 }
-            }
 
-            var newCarIds = carIds.Where(c => existingSeriesCars.Where(s => s.CarId == c).Count() == 0).ToList();
-            var cars = _context.Cars.Where(c => newCarIds.Contains(c.Id)).ToList();
-            foreach (var car in cars)
-            {
-                SeriesCar seriesCar = new SeriesCar
-                {
-                    Series = existing,
-                    SeriesId = existing.Id,
-                    Car = car,
-                    CarId = car.Id
-                };
-                _context.SeriesCars.Add(seriesCar);
-                seriesCars.Add(seriesCar);
+                _context.SaveChanges();
+                existing.SeriesCars = seriesCars;
             }
-            _context.SaveChanges();
-            existing.SeriesCars = seriesCars;
             return Ok(new SeriesDTO(existing));
         }
 

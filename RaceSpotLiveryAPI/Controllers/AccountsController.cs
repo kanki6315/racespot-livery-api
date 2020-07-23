@@ -39,6 +39,7 @@ namespace RaceSpotLiveryAPI.Controllers
 
         private ILogger<AccountsController> _logger;
 
+        private readonly string _baseUrl;
 
         public AccountsController(
             IConfiguration configuration,
@@ -54,6 +55,7 @@ namespace RaceSpotLiveryAPI.Controllers
             _secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Authentication.SigningKey"]));
             _iracingService = iracingService;
             _logger = logger;
+            _baseUrl = configuration["BaseUrl"];
         }
 
         [Route("facebook")]
@@ -107,7 +109,7 @@ namespace RaceSpotLiveryAPI.Controllers
                     await _userManager.AddLoginAsync(user, info);
                 }
                 String jwtToken = getTokenFromEmail(email);
-                return Redirect($"https://racespot.media/#token={jwtToken}");
+                return Redirect($"{_baseUrl}/#token={jwtToken}");
             }
             else
             {
@@ -116,7 +118,7 @@ namespace RaceSpotLiveryAPI.Controllers
                 String jwtToken = getTokenFromEmail(email);
                 _logger.LogDebug("Redirecting");
                 Console.WriteLine("Redirecting");
-                return Redirect($"https://racespot.media/#token={jwtToken}");
+                return Redirect($"{_baseUrl}/#token={jwtToken}");
             }
         }
         [HttpPost]
@@ -189,7 +191,7 @@ namespace RaceSpotLiveryAPI.Controllers
             try
             {
                 var success = await _iracingService.SendPrivateMessage(wrapper.IracingId,
-                $"Click on the link to validate your RaceSpot Liveries Account! https://racespot.media/#key={invite.Id}");
+                $"Click on the link to validate your RaceSpot Liveries Account! {_baseUrl}/#key={invite.Id}");
                 if (!success)
                 {
                     return StatusCode(StatusCodes.Status500InternalServerError,
