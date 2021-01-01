@@ -69,7 +69,8 @@ namespace RaceSpotLiveryAPI.Controllers
                 IsArchived = dto.IsArchived,
                 LastUpdated = DateTime.UtcNow,
                 LogoImgUrl = dto.LogoImgUrl,
-                Description = dto.Description
+                Description = dto.Description,
+                IsLeague = dto.IsLeague
             };
             
             _context.Series.Add(series);
@@ -118,6 +119,7 @@ namespace RaceSpotLiveryAPI.Controllers
             existing.LastUpdated = DateTime.UtcNow;
             existing.LogoImgUrl = dto.LogoImgUrl;
             existing.Description = dto.Description;
+            existing.IsLeague = dto.IsLeague;
             _context.SaveChanges();
 
             if (cars.Count > 0)
