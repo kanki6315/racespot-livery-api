@@ -177,7 +177,8 @@ namespace RaceSpotLiveryAPI.Services
                     break;
                 case LiveryType.Car:
                 default:
-                    itemPath = $"car{carNumPath}";
+                    //itemPath = $"car{carNumPath}";
+                    itemPath = "car";
                     break;
             }
 

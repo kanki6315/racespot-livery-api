@@ -21,6 +21,7 @@ namespace RaceSpotLiveryAPI.DTOs
             this.LastUpdated = series.LastUpdated;
             this.LogoImgUrl = series.LogoImgUrl;
             this.Description = series.Description;
+            this.IsLeague = series.IsLeague;
 
             if(series.SeriesCars != null)
             {
