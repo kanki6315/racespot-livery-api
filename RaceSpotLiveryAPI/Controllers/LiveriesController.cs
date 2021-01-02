@@ -153,7 +153,8 @@ namespace RaceSpotLiveryAPI.Controllers
                     LiveryType = dto.LiveryType,
                     User = user,
                     UserId = user.Id,
-                    Status = UploadStatus.WAITING
+                    Status = UploadStatus.WAITING,
+                    IsCustomNumber = false
                 };
                 if (dto.CarId.HasValue)
                 {
