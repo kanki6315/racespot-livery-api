@@ -17,6 +17,7 @@ namespace RaceSpotLiveryAPI.Entities
         public string ITeamName { get; set; }
         public UploadStatus Status { get; set; }
         public LiveryType LiveryType { get; set; }
+        public bool IsCustomNumber { get; set; }
         public virtual Series Series { get; set; }
         public Guid SeriesId { get; set; }
         public virtual Car Car { get; set; }

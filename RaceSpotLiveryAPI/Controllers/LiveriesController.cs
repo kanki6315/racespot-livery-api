@@ -64,6 +64,7 @@ namespace RaceSpotLiveryAPI.Controllers
             {
                 List<LiveryDTO> liveries = _context.Liveries.Where(l => l.SeriesId == seriesId && l.UserId == user.Id)
                     .Include(l => l.Car)
+                    .Include(l => l.Series)
                     .ToList().Select(t => new LiveryDTO(t, _s3Service.GetPreview(t))).ToList();
                 return Ok(liveries);
             }
@@ -71,6 +72,7 @@ namespace RaceSpotLiveryAPI.Controllers
             List<LiveryDTO> allLiveries = _context.Liveries.Where(l => l.SeriesId == seriesId)
                 .Include(l => l.Car)
                 .Include(l => l.User)
+                .Include(l => l.Series)
                 .ToList().Select(t => new LiveryDTO(t, _s3Service.GetPreview(t))).ToList();
             return Ok(allLiveries);
             // TODO: Implement endpoint that aggregates liveries per user or per team for pagination in admin UI
@@ -110,13 +112,17 @@ namespace RaceSpotLiveryAPI.Controllers
             Livery livery;
             if (String.IsNullOrEmpty(dto.ITeamId))
             {
-                livery = _context.Liveries.Include(l => l.Car).FirstOrDefault(l => l.SeriesId == seriesId
+                livery = _context.Liveries.Include(l => l.Car)
+                    .Include(l => l.Series)
+                    .FirstOrDefault(l => l.SeriesId == seriesId
                     && l.UserId == user.Id && l.LiveryType == dto.LiveryType && String.IsNullOrEmpty(l.ITeamId));
             }
             else
             {
-                livery = _context.Liveries.Include(l => l.Car).FirstOrDefault(l => l.SeriesId == seriesId
-                    && l.ITeamId == dto.ITeamId && l.LiveryType == dto.LiveryType);
+                livery = _context.Liveries.Include(l => l.Car)
+                    .Include(l => l.Series)
+                    .FirstOrDefault(l => l.SeriesId == seriesId
+                                        && l.ITeamId == dto.ITeamId && l.LiveryType == dto.LiveryType);
             }
             if (livery == null)
             {
@@ -141,12 +147,14 @@ namespace RaceSpotLiveryAPI.Controllers
                 livery = new Livery()
                 {
                     SeriesId = seriesId,
+                    Series = series,
                     ITeamId = dto.ITeamId,
                     ITeamName = teamName,
                     LiveryType = dto.LiveryType,
                     User = user,
                     UserId = user.Id,
-                    Status = UploadStatus.WAITING
+                    Status = UploadStatus.WAITING,
+                    IsCustomNumber = false
                 };
                 if (dto.CarId.HasValue)
                 {
@@ -204,7 +212,9 @@ namespace RaceSpotLiveryAPI.Controllers
         public async Task<IActionResult> FinalizeLivery([FromRoute] Guid id)
         {
             var livery = _context.Liveries.Include(l => l.Car)
-                .Include(l => l.User).FirstOrDefault(l => l.Id == id);
+                .Include(l => l.User)
+                .Include(l => l.Series)
+                .FirstOrDefault(l => l.Id == id);
             if (livery == null)
             {
                 return NotFound($"Unable to find livery with id {id}");

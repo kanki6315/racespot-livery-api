@@ -59,7 +59,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Ferrari Vs Ford\",\r\n    \"isTeam\": false,\r\n    \"isArchived\": false,\r\n    \"carIds\": [\"b2c5871b-f46c-4199-ad61-3179704422ec\", \"8bdf85ae-0114-40fd-93ae-e8681a28670c\"]\r\n}",
+							"raw": "{\r\n    \"name\": \"Ferrari Vs Ford\",\r\n    \"isTeam\": false,\r\n    \"isArchived\": false,\r\n    \"isLeague\": false,\r\n    \"carIds\": [\"b2c5871b-f46c-4199-ad61-3179704422ec\", \"8bdf85ae-0114-40fd-93ae-e8681a28670c\"]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -93,7 +93,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": \"07ad6841-4d25-4f54-8a43-c02994f542e5\",\r\n    \"name\": \"Ferrari Vs Ford\",\r\n    \"isTeam\": false,\r\n    \"isArchived\": false\r\n}",
+							"raw": "{\r\n    \"id\": \"07ad6841-4d25-4f54-8a43-c02994f542e5\",\r\n    \"name\": \"Ferrari Vs Ford\",\r\n    \"isTeam\": false,\r\n    \"isArchived\": false,\r\n    \"isLeague\": false\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -141,31 +141,6 @@
 							"path": [
 								"cars",
 								""
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get Car By ID",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{BearerToken}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{Host}}://{{BaseUrl}}/cars/8bdf85ae-0114-40fd-93ae-e8681a28670c",
-							"protocol": "{{Host}}",
-							"host": [
-								"{{BaseUrl}}"
-							],
-							"path": [
-								"cars",
-								"8bdf85ae-0114-40fd-93ae-e8681a28670c"
 							]
 						}
 					},
@@ -225,6 +200,31 @@
 								}
 							}
 						},
+						"url": {
+							"raw": "{{Host}}://{{BaseUrl}}/cars/8bdf85ae-0114-40fd-93ae-e8681a28670c",
+							"protocol": "{{Host}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"cars",
+								"8bdf85ae-0114-40fd-93ae-e8681a28670c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Car By ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{BearerToken}}",
+								"type": "text"
+							}
+						],
 						"url": {
 							"raw": "{{Host}}://{{BaseUrl}}/cars/8bdf85ae-0114-40fd-93ae-e8681a28670c",
 							"protocol": "{{Host}}",
@@ -617,31 +617,6 @@
 					"response": []
 				},
 				{
-					"name": "GET Livery By ID",
-					"request": {
-						"method": "GET",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer {{BearerToken}}",
-								"type": "text"
-							}
-						],
-						"url": {
-							"raw": "{{Host}}://{{BaseUrl}}/liveries/a372564b-1d27-4a64-9cce-c95b3f91ea3e",
-							"protocol": "{{Host}}",
-							"host": [
-								"{{BaseUrl}}"
-							],
-							"path": [
-								"liveries",
-								"a372564b-1d27-4a64-9cce-c95b3f91ea3e"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "Upload Livery",
 					"request": {
 						"method": "POST",
@@ -672,6 +647,31 @@
 								"07ad6841-4d25-4f54-8a43-c02994f542e5",
 								"liveries",
 								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Livery By ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{BearerToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{Host}}://{{BaseUrl}}/liveries/a372564b-1d27-4a64-9cce-c95b3f91ea3e",
+							"protocol": "{{Host}}",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"liveries",
+								"a372564b-1d27-4a64-9cce-c95b3f91ea3e"
 							]
 						}
 					},

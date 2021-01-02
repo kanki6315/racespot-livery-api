@@ -21,6 +21,7 @@ namespace RaceSpotLiveryAPI.DTOs
             this.LastUpdated = series.LastUpdated;
             this.LogoImgUrl = series.LogoImgUrl;
             this.Description = series.Description;
+            this.IsLeague = series.IsLeague;
 
             if(series.SeriesCars != null)
             {
@@ -39,6 +40,7 @@ namespace RaceSpotLiveryAPI.DTOs
         public DateTime LastUpdated { get; set; }
         public string LogoImgUrl { get; set; }
         public string Description { get; set; }
+        public bool IsLeague { get; set; }
 
         public List<Guid> CarIds { get; set; }
         public List<CarDTO> Cars { get; set; }
