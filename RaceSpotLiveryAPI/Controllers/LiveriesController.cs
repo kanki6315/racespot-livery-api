@@ -108,7 +108,11 @@ namespace RaceSpotLiveryAPI.Controllers
             {
                 return BadRequest("Series is not a team series but Team ID was provided");
             }
-
+            if (!series.IsLeague && dto.IsCustomNumber)
+            {
+                return BadRequest("Custom Number paints are only permitted for league events");
+            }
+            
             Livery livery;
             if (String.IsNullOrEmpty(dto.ITeamId))
             {
@@ -154,7 +158,7 @@ namespace RaceSpotLiveryAPI.Controllers
                     User = user,
                     UserId = user.Id,
                     Status = UploadStatus.WAITING,
-                    IsCustomNumber = false
+                    IsCustomNumber = dto.IsCustomNumber
                 };
                 if (dto.CarId.HasValue)
                 {
@@ -197,6 +201,7 @@ namespace RaceSpotLiveryAPI.Controllers
                     }
                     livery.CarId = dto.CarId.Value;
                     livery.Car = car;
+                    livery.IsCustomNumber = dto.IsCustomNumber;
                 }
                 livery.Status = UploadStatus.WAITING;
                 _context.SaveChanges();

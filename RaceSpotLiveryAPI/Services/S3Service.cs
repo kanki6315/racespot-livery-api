@@ -162,7 +162,7 @@ namespace RaceSpotLiveryAPI.Services
         {
             string id = livery.IsTeam() ? livery.ITeamId : livery.User.IracingId;
             string itemPath;
-            string carNumPath = livery.Series.IsLeague ? "_num" : "";
+            string carNumPath = livery.Series.IsLeague && livery.IsCustomNumber ? "_num" : "";
             string teamPath = livery.IsTeam() ? "_team" : "";
             switch (livery.LiveryType)
             {
@@ -177,8 +177,7 @@ namespace RaceSpotLiveryAPI.Services
                     break;
                 case LiveryType.Car:
                 default:
-                    //itemPath = $"car{carNumPath}";
-                    itemPath = "car";
+                    itemPath = $"car{carNumPath}";
                     break;
             }
 

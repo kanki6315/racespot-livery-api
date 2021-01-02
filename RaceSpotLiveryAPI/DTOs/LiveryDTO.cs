@@ -22,6 +22,7 @@ namespace RaceSpotLiveryAPI.DTOs
             this.LiveryType = livery.LiveryType;
             this.ITeamId = livery.ITeamId;
             this.ITeamName = livery.ITeamName;
+            this.IsCustomNumber = livery.IsCustomNumber;
             if(livery.Car != null)
             {
                 CarName = livery.Car.Name;
@@ -54,5 +55,6 @@ namespace RaceSpotLiveryAPI.DTOs
         public string UserId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public bool IsCustomNumber { get; set; }
     }
 }
