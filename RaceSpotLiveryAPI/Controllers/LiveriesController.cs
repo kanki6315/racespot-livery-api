@@ -201,6 +201,9 @@ namespace RaceSpotLiveryAPI.Controllers
                     }
                     livery.CarId = dto.CarId.Value;
                     livery.Car = car;
+                }
+                if (dto.LiveryType == LiveryType.Car)
+                {
                     livery.IsCustomNumber = dto.IsCustomNumber;
                 }
                 livery.Status = UploadStatus.WAITING;
