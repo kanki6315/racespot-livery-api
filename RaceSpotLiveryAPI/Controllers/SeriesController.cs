@@ -24,16 +24,14 @@ namespace RaceSpotLiveryAPI.Controllers
             _context = context;
         }
 
-
         [HttpGet]
-        public IActionResult GetAllActiveSeries([FromQuery] bool showArchived=false, [FromQuery] int offset=0, [FromQuery] int limit=20)
+        [Route("me")]
+        public IActionResult GetMyManagedSeries([FromQuery] bool showArchived=false, [FromQuery] int offset=0, [FromQuery] int limit=20)
         {
             var user = _context.Users.Include(u => u.Series).FirstOrDefault(u => u.UserName == User.Identity.Name);
-            if (user == null || !(user.IsAdmin || user.IsLeagueAdmin)) 
+            if (user == null || !(user.IsAdmin || user.IsLeagueAdmin))
             {
-                var series = _context.Series.Where(s => !s.IsArchived)
-                        .ToList().OrderBy(s => s.Name).Select(s => new SeriesDTO(s)).ToList();
-                return Ok(series);
+                return Unauthorized();
             }
 
             if (user.IsLeagueAdmin)
@@ -62,6 +60,14 @@ namespace RaceSpotLiveryAPI.Controllers
                     .OrderBy(s => s.Name).Skip(offset).Take(limit).ToList().Select(s => new SeriesDTO(s)).ToList();
                 return Ok(series);
             }
+        }
+
+        [HttpGet]
+        public IActionResult GetAllActiveSeries([FromQuery] bool showArchived=false, [FromQuery] int offset=0, [FromQuery] int limit=20)
+        {
+            var series = _context.Series.Where(s => !s.IsArchived)
+                        .ToList().OrderBy(s => s.Name).Select(s => new SeriesDTO(s)).ToList();
+            return Ok(series);
         }
 
         [HttpPost]
