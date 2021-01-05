@@ -26,13 +26,24 @@ namespace RaceSpotLiveryAPI.Controllers
 
 
         [HttpGet]
-        public IActionResult GetAllActiveSeries([FromQuery] bool showArchived=false, [FromQuery] int offset=0, [FromQuery] int limit=10)
+        public IActionResult GetAllActiveSeries([FromQuery] bool showArchived=false, [FromQuery] int offset=0, [FromQuery] int limit=20)
         {
-            var user = _context.Users.FirstOrDefault(u => u.UserName == User.Identity.Name);
-            if (user == null || !user.IsAdmin) 
+            var user = _context.Users.Include(u => u.Series).FirstOrDefault(u => u.UserName == User.Identity.Name);
+            if (user == null || !(user.IsAdmin || user.IsLeagueAdmin)) 
             {
                 var series = _context.Series.Where(s => !s.IsArchived)
                         .ToList().OrderBy(s => s.Name).Select(s => new SeriesDTO(s)).ToList();
+                return Ok(series);
+            }
+
+            if (user.IsLeagueAdmin)
+            {
+                var seriesList = user.Series.Select(s => s.SeriesId).ToList();
+                var series = _context.Series
+                    .Where(s => !s.IsArchived && seriesList.Contains(s.Id))
+                    .Include(s => s.SeriesCars)
+                    .ThenInclude(s => s.Car)
+                    .ToList().OrderBy(s => s.Name).Select(s => new SeriesDTO(s)).ToList();
                 return Ok(series);
             }
 

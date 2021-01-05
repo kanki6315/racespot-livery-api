@@ -95,6 +95,8 @@ namespace RaceSpotLiveryAPI.Controllers
                         UserName = email,
                         Email = email,
                         EmailConfirmed = true,
+                        IsAdmin = false,
+                        IsLeagueAdmin = false
                     };
                     var createResult = await _userManager.CreateAsync(newUser);
                     if (!createResult.Succeeded)
