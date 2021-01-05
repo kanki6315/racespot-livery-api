@@ -25,5 +25,6 @@ namespace RaceSpotLiveryAPI.Entities
         public ICollection<Event> Events { get; set; }
         public ICollection<Livery> Liveries { get; set; }
         public ICollection<SeriesCar> SeriesCars { get; set; }
+        public ICollection<SeriesAdmin> SeriesAdmins { get; set; }
     }
 }

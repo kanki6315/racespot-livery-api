@@ -60,7 +60,7 @@ namespace RaceSpotLiveryAPI.Controllers
                 return Unauthorized();
             }
 
-            if (!user.IsAdmin || !showAll)
+            if (!(user.IsAdmin || user.IsLeagueAdmin) || !showAll)
             {
                 List<LiveryDTO> liveries = _context.Liveries.Where(l => l.SeriesId == seriesId && l.UserId == user.Id)
                     .Include(l => l.Car)

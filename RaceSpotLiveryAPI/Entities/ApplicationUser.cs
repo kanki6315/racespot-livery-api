@@ -11,9 +11,11 @@ namespace RaceSpotLiveryAPI.Entities
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public bool IsAdmin { get; set; }
+        public bool IsLeagueAdmin { get; set; }
         public string IracingId { get; set; }
 
         public virtual UserInvite Invite { get; set; }
         public ICollection<Livery> Liveries { get; set; }
+        public ICollection<SeriesAdmin> Series { get; set; }
     }
 }
