@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using RaceSpotLiveryAPI.Entities;
 
 namespace RaceSpotLiveryAPI.Controllers
 {
@@ -38,5 +39,38 @@ namespace RaceSpotLiveryAPI.Controllers
             return Ok(new UserDTO(user));
         }
 
+        
+        [HttpGet]
+        [Route("unverifiedUsers")]
+        [Authorize(Policy = "GlobalAdmin")]
+        public IActionResult GetUsers()
+        {
+            var users = _context.Users
+                .Include(u => u.Invite)
+                .Where(u => u.Invite != null && u.Invite.Status == InviteStatus.SENT)
+                .Select(u => new UserDTO(u))
+                .ToList();
+
+            return Ok(users);
+        }
+        
+        [HttpPost]
+        [Route("{id}/reset")]
+        [Authorize(Policy = "GlobalAdmin")]
+        public IActionResult ResetUser([FromRoute] string id)
+        {
+            var user = _context.Users
+                .Include(u => u.Invite)
+                .FirstOrDefault(u => u.Id == id);
+
+            if (user == null)
+            {
+                return NotFound("Unable to find user to reset invitation");
+            }
+
+            _context.UserInvites.Remove(user.Invite);
+            _context.SaveChanges();
+            return Ok();
+        }
     }
 }

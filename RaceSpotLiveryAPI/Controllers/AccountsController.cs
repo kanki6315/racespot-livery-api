@@ -140,6 +140,13 @@ namespace RaceSpotLiveryAPI.Controllers
             {
                 return BadRequest("Iracing Id must be populated");
             }
+            wrapper.IracingId = wrapper.IracingId.Trim();
+            bool canConvert = int.TryParse(wrapper.IracingId, out _);
+            if (!canConvert)
+            {
+                return BadRequest("Iracing Id must be a number");
+            }
+            
             var user = _context.Users.FirstOrDefault(u => u.UserName == User.Identity.Name);
             if (user == null)
             {
