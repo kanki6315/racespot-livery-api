@@ -18,8 +18,8 @@ namespace RaceSpotLiveryAPI.Contexts
         public DbSet<Car> Cars { get; set; }
         public DbSet<SeriesCar> SeriesCars { get; set; }
         public DbSet<UserInvite> UserInvites { get; set; }
-        
         public DbSet<SeriesAdmin> SeriesAdmins { get; set; }
+        public DbSet<RejectionNotice> Rejections { get; set; }
 
         public RaceSpotDBContext(DbContextOptions options) : base(options)
         {
@@ -34,6 +34,7 @@ namespace RaceSpotLiveryAPI.Contexts
             builder.ApplyConfiguration(new SeriesCarEntityConfiguration());
             builder.ApplyConfiguration(new UserInviteEntityConfiguration());
             builder.ApplyConfiguration(new SeriesAdminEntityConfiguration());
+            builder.ApplyConfiguration(new RejectionNoticeEntityConfiguration());
 
             base.OnModelCreating(builder);
         }

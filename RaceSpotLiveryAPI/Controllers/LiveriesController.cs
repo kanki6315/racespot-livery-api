@@ -62,14 +62,14 @@ namespace RaceSpotLiveryAPI.Controllers
 
             if (!(user.IsAdmin || user.IsLeagueAdmin) || !showAll)
             {
-                List<LiveryDTO> liveries = _context.Liveries.Where(l => l.SeriesId == seriesId && l.UserId == user.Id)
+                var liveries = _context.Liveries.Where(l => l.SeriesId == seriesId && l.UserId == user.Id)
                     .Include(l => l.Car)
                     .Include(l => l.Series)
                     .ToList().Select(t => new LiveryDTO(t, _s3Service.GetPreview(t))).ToList();
                 return Ok(liveries);
             }
             
-            List<LiveryDTO> allLiveries = _context.Liveries.Where(l => l.SeriesId == seriesId)
+            var allLiveries = _context.Liveries.Where(l => l.SeriesId == seriesId)
                 .Include(l => l.Car)
                 .Include(l => l.User)
                 .Include(l => l.Series)
@@ -130,7 +130,7 @@ namespace RaceSpotLiveryAPI.Controllers
             }
             if (livery == null)
             {
-                string teamName = "";
+                var teamName = "";
                 if (!String.IsNullOrEmpty(dto.ITeamId))
                 {
                     try
@@ -158,7 +158,8 @@ namespace RaceSpotLiveryAPI.Controllers
                     User = user,
                     UserId = user.Id,
                     Status = UploadStatus.WAITING,
-                    IsCustomNumber = dto.IsCustomNumber
+                    IsCustomNumber = dto.IsCustomNumber,
+                    IsRejected = false
                 };
                 if (dto.CarId.HasValue)
                 {
@@ -167,7 +168,7 @@ namespace RaceSpotLiveryAPI.Controllers
                     {
                         return NotFound($"Could not find car with id {dto.CarId}");
                     }
-                    if (car.SeriesCars.Where(s => s.SeriesId == seriesId).Count() == 0)
+                    if (car.SeriesCars.Count(s => s.SeriesId == seriesId) == 0)
                     {
                         return BadRequest("Car is not in series");
                     }
@@ -190,7 +191,7 @@ namespace RaceSpotLiveryAPI.Controllers
                     {
                         return NotFound($"Could not find car with id {dto.CarId}");
                     }
-                    if (car.SeriesCars.Where(s => s.SeriesId == seriesId).Count() == 0)
+                    if (car.SeriesCars.Count(s => s.SeriesId == seriesId) == 0)
                     {
                         return BadRequest("Car is not in series");
                     }
@@ -206,11 +207,23 @@ namespace RaceSpotLiveryAPI.Controllers
                 {
                     livery.IsCustomNumber = dto.IsCustomNumber;
                 }
+
+                if (livery.IsRejected)
+                {
+                    var rejection = _context.Rejections
+                        .FirstOrDefault(r => r.LiveryId == livery.Id && r.Status != RejectionStatus.Resolved);
+                    if (rejection == null)
+                    {
+                        return StatusCode(StatusCodes.Status500InternalServerError,
+                            "Error while resetting rejected status on livery - please contact Support!");
+                    }
+                    rejection.Status = RejectionStatus.Updated;
+                }
                 livery.Status = UploadStatus.WAITING;
                 _context.SaveChanges();
             }
 
-            LiveryDTO returnDto = new LiveryDTO(livery);
+            var returnDto = new LiveryDTO(livery);
             returnDto.UploadUrl = _s3Service.GetPresignedPutUrlForLivery(livery);
             return Ok(returnDto);
         }
