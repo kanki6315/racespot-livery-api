@@ -186,9 +186,9 @@ namespace RaceSpotLiveryAPI.Controllers
             else
             {
                 DateTime now = DateTime.UtcNow;
-                if(invite.LastUpdated > now.AddHours(-24) && invite.LastUpdated <= now)
+                if(invite.LastUpdated > now.AddMinutes(-15) && invite.LastUpdated <= now)
                 {
-                    return BadRequest("You must wait 24 hours after a verification message to request an additional one");
+                    return BadRequest("You must wait 15 minutes after a verification message to request an additional one");
                 }
                 if(invite.IracingId != wrapper.IracingId)
                 {

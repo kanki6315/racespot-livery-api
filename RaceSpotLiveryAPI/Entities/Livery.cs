@@ -13,6 +13,7 @@ namespace RaceSpotLiveryAPI.Entities
             Id = Guid.NewGuid();
         }
 
+        public bool IsRejected { get; set; }
         public string ITeamId { get; set; }
         public string ITeamName { get; set; }
         public UploadStatus Status { get; set; }
@@ -24,6 +25,7 @@ namespace RaceSpotLiveryAPI.Entities
         public Guid? CarId { get; set; }
         public virtual ApplicationUser User { get; set; }
         public string UserId { get; set; }
+        public ICollection<RejectionNotice> Rejections { get; set; }
         public Guid Id { get; set; }
 
         public bool IsTeam()
