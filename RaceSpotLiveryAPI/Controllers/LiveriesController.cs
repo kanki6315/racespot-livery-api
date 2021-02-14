@@ -73,6 +73,7 @@ namespace RaceSpotLiveryAPI.Controllers
                 .Include(l => l.Car)
                 .Include(l => l.User)
                 .Include(l => l.Series)
+                .Include(l => l.Rejections)
                 .ToList().Select(t => new LiveryDTO(t, _s3Service.GetPreview(t))).ToList();
             return Ok(allLiveries);
             // TODO: Implement endpoint that aggregates liveries per user or per team for pagination in admin UI
@@ -322,6 +323,8 @@ namespace RaceSpotLiveryAPI.Controllers
                 }
             }
             _s3Service.DeleteLivery(livery);
+            var rejections = _context.Rejections.Where(r => r.LiveryId == livery.Id);
+            _context.Rejections.RemoveRange(rejections);
             _context.Liveries.Remove(livery);
             _context.SaveChanges();
 
