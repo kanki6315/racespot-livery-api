@@ -35,6 +35,11 @@ namespace RaceSpotLiveryAPI.DTOs
                 FirstName = livery.User.FirstName;
                 LastName = livery.User.LastName;
             }
+
+            if (livery.IsRejected && livery.Rejections != null)
+            {
+                this.RejectionStatus = livery.Rejections.First(l => l.Status != RejectionStatus.Resolved).Status;
+            }
         }
 
         public LiveryDTO(Livery livery, string PreviewUrl) : this(livery)
@@ -58,5 +63,7 @@ namespace RaceSpotLiveryAPI.DTOs
         public string LastName { get; set; }
         public bool IsCustomNumber { get; set; }
         public bool IsRejected { get; set; }
+        [JsonConverter(typeof(StringEnumConverter))]
+        public RejectionStatus RejectionStatus { get; set; }
     }
 }

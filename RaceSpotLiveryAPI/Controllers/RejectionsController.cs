@@ -83,9 +83,9 @@ namespace RaceSpotLiveryAPI.Controllers
             {
                 return NotFound($"Could not find livery with id {liveryId}");
             }
-            if (livery.IsRejected)
+            if (!livery.IsRejected)
             {
-                return BadRequest("Livery is already in the rejected state");
+                return BadRequest("Livery is not in the rejected state");
             }
             var rejections = _context.Rejections
                 .FirstOrDefault(s => s.LiveryId == liveryId && s.Status != RejectionStatus.Rejected);
