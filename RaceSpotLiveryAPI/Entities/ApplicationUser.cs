@@ -13,6 +13,8 @@ namespace RaceSpotLiveryAPI.Entities
         public bool IsAdmin { get; set; }
         public bool IsLeagueAdmin { get; set; }
         public string IracingId { get; set; }
+        public bool IsAgreedToEmails { get; set; }
+        public DateTime LastUpdated { get; set; }
 
         public virtual UserInvite Invite { get; set; }
         public ICollection<Livery> Liveries { get; set; }

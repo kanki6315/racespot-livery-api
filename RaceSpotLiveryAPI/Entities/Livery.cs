@@ -13,6 +13,7 @@ namespace RaceSpotLiveryAPI.Entities
             Id = Guid.NewGuid();
         }
 
+        public DateTime LastUpdated { get; set; }
         public bool IsRejected { get; set; }
         public string ITeamId { get; set; }
         public string ITeamName { get; set; }

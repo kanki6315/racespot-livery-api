@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.ObjectPool;
 
 namespace RaceSpotLiveryAPI.EntityConfiguration
 {
@@ -17,6 +18,7 @@ namespace RaceSpotLiveryAPI.EntityConfiguration
             builder.Property(p => p.ITeamId).IsRequired(false).ValueGeneratedNever();
             builder.Property(p => p.ITeamName).IsRequired(false).ValueGeneratedNever();
             builder.Property(p => p.IsCustomNumber).IsRequired().ValueGeneratedNever();
+            builder.Property(p => p.LastUpdated).IsRequired().ValueGeneratedNever();
 
             builder.HasOne(p => p.User)
                 .WithMany(u => u.Liveries)
