@@ -21,6 +21,8 @@ namespace RaceSpotLiveryAPI.DTOs
             this.IracingId = user.IracingId;
             this.EmailAddress = user.Email;
             this.IsLeagueAdmin = user.IsLeagueAdmin;
+            this.IsAgreedToEmails = user.IsAgreedToEmails;
+            this.LastUpdated = string.Format("{0:yyyy-MM-ddTHH:mm:ssZ}", user.LastUpdated);
             if(user.Invite != null && user.Invite.Status == InviteStatus.SENT)
             {
                 this.LastInviteSent = string.Format("{0:yyyy-MM-ddTHH:mm:ssZ}", user.Invite.LastUpdated);
@@ -36,5 +38,7 @@ namespace RaceSpotLiveryAPI.DTOs
         public string EmailAddress { get; set; }
         public string LastInviteSent { get; set; }
         public bool IsLeagueAdmin { get; set; }
+        public bool IsAgreedToEmails { get; set; }
+        public string LastUpdated { get; set; }
     }
 }

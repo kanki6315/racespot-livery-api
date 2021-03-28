@@ -160,7 +160,8 @@ namespace RaceSpotLiveryAPI.Controllers
                     UserId = user.Id,
                     Status = UploadStatus.WAITING,
                     IsCustomNumber = dto.IsCustomNumber,
-                    IsRejected = false
+                    IsRejected = false,
+                    LastUpdated = DateTime.UtcNow,
                 };
                 if (dto.CarId.HasValue)
                 {
@@ -280,6 +281,7 @@ namespace RaceSpotLiveryAPI.Controllers
                 }
             }
             livery.Status = UploadStatus.UPLOADED;
+            livery.LastUpdated = DateTime.UtcNow;
             await _context.SaveChangesAsync();
 
             return Ok(new LiveryDTO(livery, _s3Service.GetPreview(livery)));

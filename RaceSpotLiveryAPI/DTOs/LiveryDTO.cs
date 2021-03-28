@@ -24,6 +24,7 @@ namespace RaceSpotLiveryAPI.DTOs
             this.ITeamName = livery.ITeamName;
             this.IsCustomNumber = livery.IsCustomNumber;
             this.IsRejected = livery.IsRejected;
+            this.LastUpdated = string.Format("{0:yyyy-MM-ddTHH:mm:ssZ}", livery.LastUpdated);
             if(livery.Car != null)
             {
                 CarName = livery.Car.Name;
@@ -65,5 +66,6 @@ namespace RaceSpotLiveryAPI.DTOs
         public bool IsRejected { get; set; }
         [JsonConverter(typeof(StringEnumConverter))]
         public RejectionStatus RejectionStatus { get; set; }
+        public string LastUpdated { get; set; }
     }
 }

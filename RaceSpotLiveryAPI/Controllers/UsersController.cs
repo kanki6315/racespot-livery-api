@@ -38,6 +38,24 @@ namespace RaceSpotLiveryAPI.Controllers
 
             return Ok(new UserDTO(user));
         }
+        
+        [HttpPut]
+        [Route("me")]
+        [Authorize]
+        public async Task<IActionResult> PutUser(ApplicationUser userBody)
+        {
+            var user = await _context.Users
+                .Include(u => u.Invite).FirstOrDefaultAsync(u => u.UserName == User.Identity.Name);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            user.IsAgreedToEmails = userBody.IsAgreedToEmails;
+            user.LastUpdated = DateTime.UtcNow;
+
+            return Ok(new UserDTO(user));
+        }
 
         
         [HttpGet]
