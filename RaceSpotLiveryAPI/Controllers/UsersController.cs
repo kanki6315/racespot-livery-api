@@ -8,7 +8,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using RaceSpotLiveryAPI.Entities;
+using RaceSpotLiveryAPI.Services;
 
 namespace RaceSpotLiveryAPI.Controllers
 {
@@ -18,10 +20,12 @@ namespace RaceSpotLiveryAPI.Controllers
     public class UsersController : ControllerBase
     {
         private readonly RaceSpotDBContext _context;
+        private readonly ISESService _sesService;
 
-        public UsersController(RaceSpotDBContext context)
+        public UsersController(RaceSpotDBContext context, ISESService sesService)
         {
             _context = context;
+            _sesService = sesService;
         }
 
         [HttpGet]
@@ -44,17 +48,26 @@ namespace RaceSpotLiveryAPI.Controllers
         [Authorize]
         public async Task<IActionResult> PutUser(ApplicationUser userBody)
         {
-            var user = await _context.Users
-                .Include(u => u.Invite).FirstOrDefaultAsync(u => u.UserName == User.Identity.Name);
-            if (user == null)
+            try
             {
-                return Unauthorized();
+                var user = await _context.Users
+                    .Include(u => u.Invite).FirstOrDefaultAsync(u => u.UserName == User.Identity.Name);
+                if (user == null)
+                {
+                    return Unauthorized();
+                }
+
+                user.IsAgreedToEmails = userBody.IsAgreedToEmails;
+                user.LastUpdated = DateTime.UtcNow;
+            
+                await _context.SaveChangesAsync();
+                await _sesService.SendUpdateEmailSettingsNotification(user);
+                return Ok(new UserDTO(user));
             }
-
-            user.IsAgreedToEmails = userBody.IsAgreedToEmails;
-            user.LastUpdated = DateTime.UtcNow;
-
-            return Ok(new UserDTO(user));
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
         }
 
         

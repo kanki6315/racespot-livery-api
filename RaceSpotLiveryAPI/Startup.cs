@@ -48,6 +48,7 @@ namespace RaceSpotLiveryAPI
 
             services.AddSingleton<IS3Service, S3Service>();
             services.AddSingleton<IIracingService, IracingService>();
+            services.AddSingleton<ISESService, SESService>();
             services.AddControllers().AddNewtonsoftJson();
 
             services.AddAWSService<Amazon.S3.IAmazonS3>();
