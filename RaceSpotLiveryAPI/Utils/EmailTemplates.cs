@@ -759,7 +759,7 @@ a[x-apple-data-detectors='true'] {
   <tr>
     <td style=""padding-right: 0px;padding-left: 0px;"" align=""center"">
 
-      <img align=""center"" border=""0"" src=""https://racespot.media/assets/email/image-5.png"" alt=""Image"" title=""Image"" style=""outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 10%;max-width: 58px;"" width=""58""/>
+      <img align=""center"" border=""0"" src=""https://racespot.media/assets/email/{{image}}.png"" alt=""Image"" title=""Image"" style=""outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 10%;max-width: 58px;"" width=""58""/>
 
     </td>
   </tr>
@@ -778,7 +778,7 @@ a[x-apple-data-detectors='true'] {
       <td style=""overflow-wrap:break-word;word-break:break-word;padding:0px 10px 30px;font-family:'Lato',sans-serif;"" align=""left"">
 
   <div style=""color: #000000; line-height: 140%; text-align: left; word-wrap: break-word;"">
-    <p style=""font-size: 14px; line-height: 140%; text-align: center;""><span style=""font-size: 28px; line-height: 39.2px; color: #ffffff; font-family: Lato, sans-serif;"">Paint File Rejected</span></p>
+    <p style=""font-size: 14px; line-height: 140%; text-align: center;""><span style=""font-size: 28px; line-height: 39.2px; color: #ffffff; font-family: Lato, sans-serif;"">Paint File {{actionTitle}}</span></p>
   </div>
 
       </td>
@@ -817,9 +817,9 @@ a[x-apple-data-detectors='true'] {
   <div style=""color: #000000; line-height: 140%; text-align: left; word-wrap: break-word;"">
     <p style=""font-size: 14px; line-height: 140%;""><span style=""font-size: 18px; line-height: 25.2px; color: #666666;"">Hello {{name}},</span></p>
 <p style=""font-size: 14px; line-height: 140%;"">&nbsp;</p>
-<p style=""font-size: 14px; line-height: 140%;""><span style=""font-size: 18px; line-height: 25.2px; color: #666666;"">Your paint file for {{seriesName}} has been rejected by the RaceSpot team. Please ensure your paint meets the <a href=""https://ir-core-sites.iracing.com/members/pdfs/iRacing_Custom_Paint_Policy_2_23_2011.pdf"" target=""_blank"" rel=""noopener"">iRacing Paint Policy</a> as well as any series specific guidelines. </span></p>
+<p style=""font-size: 14px; line-height: 140%;""><span style=""font-size: 18px; line-height: 25.2px; color: #666666;"">Your paint file for {{seriesName}} has been {{actionBody}} by the RaceSpot team. Please ensure all your paints meet the <a href=""https://ir-core-sites.iracing.com/members/pdfs/iRacing_Custom_Paint_Policy_2_23_2011.pdf"" target=""_blank"" rel=""noopener"">iRacing Paint Policy</a> as well as any series specific guidelines. </span></p>
 <p style=""font-size: 14px; line-height: 140%;"">&nbsp;</p>
-<p style=""font-size: 14px; line-height: 140%;""><span style=""font-size: 18px; line-height: 25.2px; color: #666666;"">To fix your paint, please follow the link below: </span></p>
+<p style=""font-size: 14px; line-height: 140%;""><span style=""font-size: 18px; line-height: 25.2px; color: #666666;"">To view your paints, please follow the link below: </span></p>
   </div>
 
       </td>
@@ -837,7 +837,7 @@ a[x-apple-data-detectors='true'] {
 <div align=""left"">
   <!--[if mso]><table width=""100%"" cellpadding=""0"" cellspacing=""0"" border=""0"" style=""border-spacing: 0; border-collapse: collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;font-family:'Lato',sans-serif;""><tr><td style=""font-family:'Lato',sans-serif;"" align=""left""><v:roundrect xmlns:v=""urn:schemas-microsoft-com:vml"" xmlns:w=""urn:schemas-microsoft-com:office:word"" href=""https://racespot.media"" style=""height:51px; v-text-anchor:middle; width:232px;"" arcsize=""2%"" stroke=""f"" fillcolor=""#1c103b""><w:anchorlock/><center style=""color:#FFFFFF;font-family:'Lato',sans-serif;""><![endif]-->
     <a href=""https://racespot.media"" target=""_blank"" style=""box-sizing: border-box;display: inline-block;font-family:'Lato',sans-serif;text-decoration: none;-webkit-text-size-adjust: none;text-align: center;color: #FFFFFF; background-color: #1c103b; border-radius: 1px; -webkit-border-radius: 1px; -moz-border-radius: 1px; width:auto; max-width:100%; overflow-wrap: break-word; word-break: break-word; word-wrap:break-word; mso-border-alt: none;"">
-      <span style=""display:block;padding:15px 40px;line-height:120%;""><span style=""font-size: 18px; line-height: 21.6px;"">Reupload Paint File</span></span>
+      <span style=""display:block;padding:15px 40px;line-height:120%;""><span style=""font-size: 18px; line-height: 21.6px;"">View Your Paints</span></span>
     </a>
   <!--[if mso]></center></v:roundrect></td></tr></table><![endif]-->
 </div>

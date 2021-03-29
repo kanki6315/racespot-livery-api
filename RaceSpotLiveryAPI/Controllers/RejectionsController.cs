@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using RaceSpotLiveryAPI.Contexts;
 using RaceSpotLiveryAPI.DTOs;
 using RaceSpotLiveryAPI.Entities;
+using RaceSpotLiveryAPI.Services;
 
 namespace RaceSpotLiveryAPI.Controllers
 {
@@ -16,10 +18,12 @@ namespace RaceSpotLiveryAPI.Controllers
     public class RejectionsController : ControllerBase
     {
         private readonly RaceSpotDBContext _context;
+        private readonly ISESService _sesService;
 
-        public RejectionsController(RaceSpotDBContext context)
+        public RejectionsController(RaceSpotDBContext context, ISESService sesService)
         {
             _context = context;
+            _sesService = sesService;
         }
         
         [HttpGet]
@@ -42,9 +46,12 @@ namespace RaceSpotLiveryAPI.Controllers
         [HttpPost]
         [Authorize(Policy = "GlobalAdmin")]
         [Route("~/liveries/{liveryId}/rejections")]
-        public IActionResult Post([FromBody] RejectionNoticeDTO dto, [FromRoute] Guid liveryId)
+        public async Task<IActionResult> Post([FromBody] RejectionNoticeDTO dto, [FromRoute] Guid liveryId)
         {
-            var livery = _context.Liveries.FirstOrDefault(l => l.Id == liveryId);
+            var livery = await _context.Liveries
+                .Include(l => l.User)
+                .Include(l => l.Series)
+                .FirstOrDefaultAsync(l => l.Id == liveryId);
             if (livery == null)
             {
                 return NotFound($"Could not find livery with id {dto.LiveryId}");
@@ -67,18 +74,22 @@ namespace RaceSpotLiveryAPI.Controllers
                 Message = dto.Message,
                 Status = RejectionStatus.Rejected
             };
-            _context.Rejections.Add(obj);
+            await _context.Rejections.AddAsync(obj);
             livery.IsRejected = true;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
+            await _sesService.SendRejectionEmail(livery);
             return Ok(new RejectionNoticeDTO(obj));
         }
 
         [HttpPut]
         [Authorize(Policy = "GlobalAdmin")]
         [Route("~/liveries/{liveryId}/rejections")]
-        public IActionResult Put([FromRoute] Guid liveryId, [FromBody] RejectionNoticeDTO dto)
+        public async Task<IActionResult> Put([FromRoute] Guid liveryId, [FromBody] RejectionNoticeDTO dto)
         {
-            var livery = _context.Liveries.FirstOrDefault(l => l.Id == liveryId);
+            var livery = await _context.Liveries
+                .Include(l => l.User)
+                .Include(l => l.Series)
+                .FirstOrDefaultAsync(l => l.Id == liveryId);
             if (livery == null)
             {
                 return NotFound($"Could not find livery with id {liveryId}");
@@ -87,15 +98,24 @@ namespace RaceSpotLiveryAPI.Controllers
             {
                 return BadRequest("Livery is not in the rejected state");
             }
-            var rejections = _context.Rejections
-                .FirstOrDefault(s => s.LiveryId == liveryId && s.Status != RejectionStatus.Rejected);
+            var rejections = await _context.Rejections
+                .FirstOrDefaultAsync(s => s.LiveryId == liveryId && s.Status != RejectionStatus.Rejected);
             if (rejections == null)
             {
                 return BadRequest("Unable to find record of rejection for livery. Contact Support");
             }
             livery.IsRejected = dto.Status != RejectionStatus.Resolved;
             rejections.Status = dto.Status;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
+
+            if (livery.IsRejected)
+            {
+                await _sesService.SendRejectionEmail(livery);
+            }
+            else
+            {
+                await _sesService.SendApprovalEmail(livery);
+            }
             return Ok();
         }
     }
