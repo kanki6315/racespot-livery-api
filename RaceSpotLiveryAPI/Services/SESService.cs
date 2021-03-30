@@ -50,13 +50,32 @@ namespace RaceSpotLiveryAPI.Services
             SendEmail(user.Email, "RaceSpot.Media Email Notification Change", htmlBody, textBody);
         }
         
+        public async Task SendApprovalEmail(Livery livery)
+        {
+            var htmlTemplateObj = Handlebars.Compile(EmailTemplates.paintUpdateHTMLTemplate);
+            var textTemplateObj = Handlebars.Compile(EmailTemplates.paintUpdateTextTemplate);
+            var data = new {
+                seriesName = livery.Series.Name,
+                name = livery.User.FirstName + ' ' + livery.User.LastName,
+                image = "approve",
+                actionTitle = "Approved",
+                actionBody = "approved"
+            };
+            var htmlBody = htmlTemplateObj(data);
+            var textBody = textTemplateObj(data);
+            SendEmail(livery.User.Email, "RaceSpot.Media Paint Approval", htmlBody, textBody);
+        }
+        
         public async Task SendRejectionEmail(Livery livery)
         {
             var htmlTemplateObj = Handlebars.Compile(EmailTemplates.paintUpdateHTMLTemplate);
             var textTemplateObj = Handlebars.Compile(EmailTemplates.paintUpdateTextTemplate);
             var data = new {
                 seriesName = livery.Series.Name,
-                name = livery.User.FirstName + ' ' + livery.User.LastName
+                name = livery.User.FirstName + ' ' + livery.User.LastName,
+                image = "reject",
+                actionTitle = "Rejected",
+                actionBody = "rejected"
             };
             var htmlBody = htmlTemplateObj(data);
             var textBody = textTemplateObj(data);
@@ -67,7 +86,7 @@ namespace RaceSpotLiveryAPI.Services
         {
             var sendRequest = new SendEmailRequest
             {
-                Source = _senderAddress,
+                Source = $"RaceSpot TV <{_senderAddress}>",
                 Destination = new Destination
                 {
                     ToAddresses =
