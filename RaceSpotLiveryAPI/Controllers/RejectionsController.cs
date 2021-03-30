@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RaceSpotLiveryAPI.Contexts;
@@ -108,14 +109,25 @@ namespace RaceSpotLiveryAPI.Controllers
             rejections.Status = dto.Status;
             await _context.SaveChangesAsync();
 
-            if (livery.IsRejected)
+            if (livery.User.IsAgreedToEmails)
             {
-                await _sesService.SendRejectionEmail(livery);
+                try
+                {
+                    if (livery.IsRejected)
+                    {
+                        await _sesService.SendRejectionEmail(livery);
+                    }
+                    else
+                    {
+                        await _sesService.SendApprovalEmail(livery);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                }
             }
-            else
-            {
-                await _sesService.SendApprovalEmail(livery);
-            }
+
             return Ok();
         }
     }
