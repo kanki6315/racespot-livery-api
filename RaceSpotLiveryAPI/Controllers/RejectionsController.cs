@@ -78,7 +78,18 @@ namespace RaceSpotLiveryAPI.Controllers
             await _context.Rejections.AddAsync(obj);
             livery.IsRejected = true;
             await _context.SaveChangesAsync();
-            await _sesService.SendRejectionEmail(livery);
+            
+            if (livery.User.IsAgreedToEmails)
+            {
+                try
+                {
+                    await _sesService.SendRejectionEmail(livery);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                }
+            }
             return Ok(new RejectionNoticeDTO(obj));
         }
 

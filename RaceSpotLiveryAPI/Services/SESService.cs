@@ -86,7 +86,7 @@ namespace RaceSpotLiveryAPI.Services
         {
             var sendRequest = new SendEmailRequest
             {
-                Source = _senderAddress,
+                Source = $"RaceSpot TV <{_senderAddress}>",
                 Destination = new Destination
                 {
                     ToAddresses =
