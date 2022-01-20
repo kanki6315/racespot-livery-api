@@ -17,9 +17,15 @@ namespace RaceSpotLiveryAPI.DTOs
             this.ITeamName = livery.ITeamName;
             this.IsCustomNumber = livery.IsCustomNumber;
             this.IsRejected = livery.IsRejected;
-            if(livery.Car != null)
+            
+            if (livery.Car != null)
             {
                 CarPath = livery.Car.Path;
+            }
+
+            if (livery.User != null)
+            {
+                IracingId = livery.User.IracingId;
             }
 
             if (livery.IsRejected && livery.Rejections != null)
@@ -38,5 +44,6 @@ namespace RaceSpotLiveryAPI.DTOs
         public bool IsRejected { get; set; }
         [JsonConverter(typeof(StringEnumConverter))]
         public RejectionStatus RejectionStatus { get; set; }
+        public string IracingId { get; set; }
     }
 }
