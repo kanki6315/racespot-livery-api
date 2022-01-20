@@ -30,7 +30,7 @@ namespace RaceSpotLiveryAPI.DTOs
 
             if (livery.IsRejected && livery.Rejections != null)
             {
-                this.RejectionStatus = livery.Rejections.First(l => l.Status != RejectionStatus.Resolved).Status;
+                this.Status = livery.Rejections.First(l => l.Status != RejectionStatus.Resolved).Status;
             }
         }
         
@@ -43,7 +43,7 @@ namespace RaceSpotLiveryAPI.DTOs
         public bool IsCustomNumber { get; set; }
         public bool IsRejected { get; set; }
         [JsonConverter(typeof(StringEnumConverter))]
-        public RejectionStatus RejectionStatus { get; set; }
+        public RejectionStatus? Status { get; set; }
         public string IracingId { get; set; }
     }
 }
