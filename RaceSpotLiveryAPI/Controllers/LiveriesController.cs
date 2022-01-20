@@ -22,7 +22,6 @@ namespace RaceSpotLiveryAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [Authorize]
     [EnableCors("CorsPolicy")]
     public class LiveriesController : ControllerBase
     {
@@ -49,8 +48,22 @@ namespace RaceSpotLiveryAPI.Controllers
             var liveries = _context.Liveries.ToList().Select(t => new LiveryDTO(t)).ToList();
             return Ok(liveries);
         }
+        
+        [HttpGet]
+        [Route("~/series/{seriesId}/liveries/download")]
+        public IActionResult GetSeriesLiveriesForDownload([FromRoute] Guid seriesId)
+        {
+            var allLiveries = _context.Liveries.Where(l => l.SeriesId == seriesId && !l.IsRejected)
+                .Include(l => l.Car)
+                .Include(l => l.User)
+                .Include(l => l.Series)
+                .Include(l => l.Rejections)
+                .ToList().Select(t => new LiveryDownloaderDTO(t)).ToList();
+            return Ok(allLiveries);
+        }
 
         [HttpGet]
+        [Authorize]
         [Route("~/series/{seriesId}/liveries")]
         public IActionResult GetAllForSeries([FromRoute] Guid seriesId, [FromQuery] bool showAll=false)
         {
@@ -80,6 +93,7 @@ namespace RaceSpotLiveryAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         [Route("~/series/{seriesId}/liveries")]
         public async Task<IActionResult> Post([FromRoute] Guid seriesId, [FromBody] LiveryDTO dto)
         {
@@ -231,6 +245,7 @@ namespace RaceSpotLiveryAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         [Route("{id}/finalize")]
         public async Task<IActionResult> FinalizeLivery([FromRoute] Guid id)
         {
@@ -288,6 +303,7 @@ namespace RaceSpotLiveryAPI.Controllers
         }
 
         [HttpDelete]
+        [Authorize]
         [Route("{id}")]
         public IActionResult DeleteById([FromRoute] Guid id)
         {
@@ -334,6 +350,7 @@ namespace RaceSpotLiveryAPI.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         [Route("{id}")]
         public IActionResult GetById([FromRoute] Guid id)
         {
