@@ -39,7 +39,7 @@
             "Type": "Schedule",
             "Properties": {
                 "Schedule": "rate(5 minutes)",
-                "Input": "{ \"Resource\": \"WarmingLambda\", \"Body\": \"2\" }"
+                "Input": "{ \"Resource\": \"WarmingLambda\", \"Body\": \"3\" }"
             }
           }
         }
