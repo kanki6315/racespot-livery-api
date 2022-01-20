@@ -1,10 +1,14 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Amazon.Lambda;
+using Amazon.Lambda.APIGatewayEvents;
+using Amazon.Lambda.Core;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace RaceSpotLiveryAPI
 {
@@ -55,6 +59,35 @@ namespace RaceSpotLiveryAPI
         /// <param name="builder"></param>
         protected override void Init(IHostBuilder builder)
         {
+        }
+        
+        public override async Task<APIGatewayProxyResponse> FunctionHandlerAsync(APIGatewayProxyRequest request,
+            ILambdaContext lambdaContext)
+        {
+            if (request.Resource == "WarmingLambda")
+            {
+                int.TryParse(request.Body, out var concurrencyCount);
+
+                if (concurrencyCount > 1)
+                {
+                    Console.WriteLine($"Warming instance {concurrencyCount}.");
+                    var client = new AmazonLambdaClient();
+                    await client.InvokeAsync(new Amazon.Lambda.Model.InvokeRequest
+                    {
+                        FunctionName = lambdaContext.FunctionName,
+                        InvocationType = InvocationType.RequestResponse,
+                        Payload = JsonConvert.SerializeObject(new APIGatewayProxyRequest
+                        {
+                            Resource = request.Resource,
+                            Body = (concurrencyCount - 1).ToString()
+                        })
+                    });
+                }
+
+                return new APIGatewayProxyResponse { };
+            }
+
+            return await base.FunctionHandlerAsync(request, lambdaContext);
         }
     }
 }
