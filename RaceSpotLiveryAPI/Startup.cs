@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -22,6 +23,7 @@ using RaceSpotLiveryAPI.Services;
 using RaceSpotLiveryAPI.Authorizers;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.ResponseCompression;
 
 namespace RaceSpotLiveryAPI
 {
@@ -95,6 +97,12 @@ namespace RaceSpotLiveryAPI
                 options.AddPolicy("GlobalAdmin", policy =>
                     policy.Requirements.Add(new AdminRequirement()));
             });
+
+            services.AddResponseCompression();
+            services.Configure<GzipCompressionProviderOptions>(options => 
+            {
+                options.Level = CompressionLevel.Fastest;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
@@ -118,6 +126,7 @@ namespace RaceSpotLiveryAPI
             {
                 endpoints.MapControllers();
             });
+            app.UseResponseCompression();
         }
     }
 }
