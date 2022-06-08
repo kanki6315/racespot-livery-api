@@ -250,10 +250,17 @@ namespace RaceSpotLiveryAPI.Services
 
         private async Task SubmitLoginAsync()
         {
+            
+            var sha256 = System.Security.Cryptography.SHA256.Create();
+
+            var passwordAndEmail = _iracingPassword + (_iracingUsername?.ToLowerInvariant());
+            var hashedPasswordAndEmailBytes = sha256.ComputeHash(System.Text.Encoding.UTF8.GetBytes(passwordAndEmail));
+            var encodedHash = Convert.ToBase64String(hashedPasswordAndEmailBytes);
+            
             var formContent = new FormUrlEncodedContent(new[]
             {
                 new KeyValuePair<string, string>("username", _iracingUsername),
-                new KeyValuePair<string, string>("password", _iracingPassword),
+                new KeyValuePair<string, string>("password", HttpUtility.HtmlEncode(encodedHash)),
                 new KeyValuePair<string, string>("utcoffset", "420"),
                 new KeyValuePair<string, string>("todaysdate", "")
             });
